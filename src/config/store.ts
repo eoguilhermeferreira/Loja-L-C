@@ -6,7 +6,7 @@ export const storeConfig = {
   name: "L&C Imports",
   shortName: "L&C",
   description:
-    "Perfumes, tênis, eletrônicos, relógios e acessórios importados com frete rápido para todo o Brasil.",
+    "Roupas masculinas e femininas, tênis e acessórios com frete rápido para todo o Brasil.",
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
 
   contact: {

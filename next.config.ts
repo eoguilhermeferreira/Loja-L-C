@@ -12,6 +12,11 @@ const nextConfig: NextConfig = {
         hostname: supabaseHostname,
         pathname: "/storage/v1/object/public/**",
       },
+      {
+        // Usado só pelas imagens placeholder dos produtos de exemplo.
+        protocol: "https",
+        hostname: "placehold.co",
+      },
     ],
   },
 };

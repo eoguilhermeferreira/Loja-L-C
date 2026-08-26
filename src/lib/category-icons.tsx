@@ -8,6 +8,8 @@ import {
   Glasses,
   Backpack,
   Gem,
+  Shirt,
+  Venus,
   ShoppingBag,
   type LucideIcon,
 } from "lucide-react";
@@ -26,6 +28,8 @@ export const CATEGORY_ICONS: Record<string, LucideIcon> = {
   oculos: Glasses,
   acessorios: Backpack,
   joias: Gem,
+  camisa: Shirt,
+  vestido: Venus,
 };
 
 export function getCategoryIcon(name: string | null): LucideIcon {
