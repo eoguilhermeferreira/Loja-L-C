@@ -75,3 +75,7 @@ Mercado Pago (`/api/webhooks/mercadopago`) apontando para esse domínio.
   ajustado manualmente pelo admin).
 - E-mail transacional (ex: Resend) e cálculo de frete real por transportadora
   (ex: Melhor Envio), caso a loja volte a precisar deles.
+
+---
+
+_Deploy verificado em produção._
