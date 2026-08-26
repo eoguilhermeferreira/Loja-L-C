@@ -17,6 +17,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "placehold.co",
       },
+      {
+        // Foto gerada por IA usada no banner promocional da home.
+        protocol: "https",
+        hostname: "d8j0ntlcm91z4.cloudfront.net",
+      },
     ],
   },
 };
