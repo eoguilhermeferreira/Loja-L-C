@@ -1,5 +1,6 @@
 import { Footer } from "@/components/store/footer";
 import { Header } from "@/components/store/header";
+import { WhatsAppFloatButton } from "@/components/store/whatsapp-float-button";
 import { getCategories } from "@/lib/queries";
 
 export default async function StoreLayout({ children }: { children: React.ReactNode }) {
@@ -10,6 +11,7 @@ export default async function StoreLayout({ children }: { children: React.ReactN
       <Header categories={categories} />
       <main className="flex-1">{children}</main>
       <Footer />
+      <WhatsAppFloatButton />
     </div>
   );
 }
