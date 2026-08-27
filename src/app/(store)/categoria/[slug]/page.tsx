@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 
+import { GenderFilter } from "@/components/store/gender-filter";
 import { ProductCard } from "@/components/store/product-card";
 import { getCategoryBySlug, getProducts } from "@/lib/queries";
 
@@ -15,20 +16,24 @@ export async function generateMetadata({
 
 export default async function CategoriaPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ genero?: string }>;
 }) {
   const { slug } = await params;
+  const { genero } = await searchParams;
   const category = await getCategoryBySlug(slug);
   if (!category) notFound();
 
-  const { products, total } = await getProducts({ categorySlug: slug, pageSize: 48 });
+  const { products, total } = await getProducts({ categorySlug: slug, gender: genero, pageSize: 48 });
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
-      <div className="mb-6 flex flex-col gap-1">
+      <div className="mb-6 flex flex-col gap-3">
         <h1 className="font-display text-2xl font-semibold sm:text-3xl">{category.name}</h1>
         <p className="text-sm text-muted-foreground">{total} produtos</p>
+        <GenderFilter basePath={`/categoria/${slug}`} currentGender={genero} />
       </div>
 
       {products.length === 0 ? (

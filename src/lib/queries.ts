@@ -72,10 +72,11 @@ export async function getProductsByHomeSection(
 export async function getProducts(options: {
   search?: string;
   categorySlug?: string;
+  gender?: string;
   page?: number;
   pageSize?: number;
 } = {}): Promise<{ products: ProductWithRelations[]; total: number }> {
-  const { search, categorySlug, page = 1, pageSize = 24 } = options;
+  const { search, categorySlug, gender, page = 1, pageSize = 24 } = options;
   const supabase = await createClient();
 
   let query = supabase
@@ -85,6 +86,10 @@ export async function getProducts(options: {
 
   if (search) {
     query = query.or(`name.ilike.%${search}%,code.ilike.%${search}%`);
+  }
+
+  if (gender === "masculino" || gender === "feminino") {
+    query = query.in("gender", [gender, "unissex"]);
   }
 
   if (categorySlug) {

@@ -69,7 +69,7 @@ export function Header({ categories }: { categories: Category[] }) {
         </Link>
 
         <nav className="hidden items-center gap-5 lg:flex">
-          {topLevel.slice(0, 6).map((category) => (
+          {topLevel.slice(0, 8).map((category) => (
             <Link
               key={category.id}
               href={`/categoria/${category.slug}`}

@@ -6,6 +6,7 @@
  */
 
 export type HomeSection = "mais_vendidos" | "novidades" | "ofertas";
+export type ProductGender = "masculino" | "feminino" | "unissex";
 export type PaymentMethod = "pix" | "cartao_credito" | "cartao_debito" | "boleto";
 export type PaymentStatus = "pendente" | "pago" | "falhou" | "reembolsado";
 export type DeliveryStatus =
@@ -59,6 +60,7 @@ export interface Database {
           weight_grams: number;
           is_active: boolean;
           home_section: HomeSection | null;
+          gender: ProductGender;
           created_at: string;
           updated_at: string;
         };

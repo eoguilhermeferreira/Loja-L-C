@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { GenderFilter } from "@/components/store/gender-filter";
 import { ProductCard } from "@/components/store/product-card";
 import { Button } from "@/components/ui/button";
 import { getProducts } from "@/lib/queries";
@@ -13,13 +14,14 @@ export const metadata = {
 export default async function ProdutosPage({
   searchParams,
 }: {
-  searchParams: Promise<{ busca?: string; pagina?: string }>;
+  searchParams: Promise<{ busca?: string; pagina?: string; genero?: string }>;
 }) {
-  const { busca, pagina } = await searchParams;
+  const { busca, pagina, genero } = await searchParams;
   const page = Math.max(1, Number(pagina) || 1);
 
   const { products, total } = await getProducts({
     search: busca,
+    gender: genero,
     page,
     pageSize: PAGE_SIZE,
   });
@@ -28,11 +30,12 @@ export default async function ProdutosPage({
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
-      <div className="mb-6 flex flex-col gap-1">
+      <div className="mb-6 flex flex-col gap-3">
         <h1 className="font-display text-2xl font-semibold sm:text-3xl">
           {busca ? `Resultados para "${busca}"` : "Todos os produtos"}
         </h1>
         <p className="text-sm text-muted-foreground">{total} produtos encontrados</p>
+        <GenderFilter basePath="/produtos" currentGender={genero} extraParams={{ busca }} />
       </div>
 
       {products.length === 0 ? (
@@ -53,7 +56,7 @@ export default async function ProdutosPage({
             <Link
               href={{
                 pathname: "/produtos",
-                query: { ...(busca ? { busca } : {}), pagina: String(page - 1) },
+                query: { ...(busca ? { busca } : {}), ...(genero ? { genero } : {}), pagina: String(page - 1) },
               }}
               aria-disabled={page <= 1}
             >
@@ -67,7 +70,7 @@ export default async function ProdutosPage({
             <Link
               href={{
                 pathname: "/produtos",
-                query: { ...(busca ? { busca } : {}), pagina: String(page + 1) },
+                query: { ...(busca ? { busca } : {}), ...(genero ? { genero } : {}), pagina: String(page + 1) },
               }}
               aria-disabled={page >= totalPages}
             >

@@ -22,10 +22,16 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { HOME_SECTION_LABELS } from "@/lib/product-constants";
 import { createClient } from "@/lib/supabase/client";
-import type { Category, HomeSection, ProductWithRelations } from "@/types/database.types";
+import type { Category, HomeSection, ProductGender, ProductWithRelations } from "@/types/database.types";
 
 type Variation = { label: string; value: string; stock: number };
 type HomeSectionOption = HomeSection | "__none__";
+
+const GENDER_LABELS: Record<ProductGender, string> = {
+  unissex: "Unissex",
+  masculino: "Masculino",
+  feminino: "Feminino",
+};
 
 export function ProductForm({
   categories,
@@ -41,6 +47,7 @@ export function ProductForm({
   const [brand, setBrand] = React.useState(product?.brand ?? "");
   const [description, setDescription] = React.useState(product?.description ?? "");
   const [categoryId, setCategoryId] = React.useState(product?.category_id ?? "__none__");
+  const [gender, setGender] = React.useState<ProductGender>(product?.gender ?? "unissex");
   const [price, setPrice] = React.useState(product?.price?.toString() ?? "");
   const [promoPrice, setPromoPrice] = React.useState(product?.promo_price?.toString() ?? "");
   const [stock, setStock] = React.useState(product?.stock?.toString() ?? "0");
@@ -105,6 +112,7 @@ export function ProductForm({
       brand: brand.trim() || null,
       description: description.trim() || null,
       category_id: categoryId === "__none__" ? null : categoryId,
+      gender,
       price: Number(price),
       promo_price: promoPrice ? Number(promoPrice) : null,
       stock: Number(stock),
@@ -152,6 +160,21 @@ export function ProductForm({
                 {categories.map((category) => (
                   <SelectItem key={category.id} value={category.id}>
                     {category.parent_id ? `— ${category.name}` : category.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label className="mb-1.5 block">Gênero</Label>
+            <Select value={gender} onValueChange={(v) => setGender(v as ProductGender)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {Object.entries(GENDER_LABELS).map(([value, label]) => (
+                  <SelectItem key={value} value={value}>
+                    {label}
                   </SelectItem>
                 ))}
               </SelectContent>

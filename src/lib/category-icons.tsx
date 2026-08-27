@@ -10,6 +10,10 @@ import {
   Gem,
   Shirt,
   Venus,
+  Snowflake,
+  Sun,
+  Layers,
+  Columns2,
   ShoppingBag,
   type LucideIcon,
 } from "lucide-react";
@@ -28,7 +32,13 @@ export const CATEGORY_ICONS: Record<string, LucideIcon> = {
   oculos: Glasses,
   acessorios: Backpack,
   joias: Gem,
+  camiseta: Shirt,
   camisa: Shirt,
+  blusa: Shirt,
+  "blusa-frio": Snowflake,
+  calca: Columns2,
+  short: Sun,
+  conjunto: Layers,
   vestido: Venus,
 };
 

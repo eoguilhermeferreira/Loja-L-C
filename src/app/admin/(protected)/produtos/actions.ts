@@ -17,6 +17,7 @@ const productFormSchema = z.object({
   weight_grams: z.number().int().positive(),
   is_active: z.boolean(),
   home_section: z.enum(["mais_vendidos", "novidades", "ofertas"]).nullable(),
+  gender: z.enum(["masculino", "feminino", "unissex"]),
   images: z.array(z.object({ url: z.string().min(1) })),
   variations: z.array(
     z.object({
