@@ -17,10 +17,12 @@ export default function AdminLoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-secondary/40 px-4">
       <Card className="w-full max-w-sm space-y-6 p-8">
         <div className="flex flex-col items-center gap-2 text-center">
-          <span className="flex size-11 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <span className="flex size-11 items-center justify-center rounded-full bg-accent/10 text-accent">
             <Lock className="size-5" />
           </span>
-          <h1 className="font-display text-xl font-semibold">{storeConfig.name} · Admin</h1>
+          <h1 className="font-display text-xl font-semibold">
+            <span className="text-accent">{storeConfig.name}</span> · Admin
+          </h1>
           <p className="text-sm text-muted-foreground">Entre com sua conta de administrador.</p>
         </div>
 

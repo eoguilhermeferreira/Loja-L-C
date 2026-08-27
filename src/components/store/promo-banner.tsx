@@ -48,13 +48,13 @@ export function PromoBanner({
       </div>
       <div className="flex flex-col justify-center gap-2 p-6 sm:p-8">
         {eyebrow && (
-          <span className="text-xs font-semibold uppercase tracking-wide text-accent-foreground/70">
+          <span className="text-xs font-semibold uppercase tracking-wide text-accent">
             {eyebrow}
           </span>
         )}
         <h3 className="font-display text-xl font-semibold sm:text-2xl">{title}</h3>
         {description && <p className="text-sm text-muted-foreground">{description}</p>}
-        <span className="mt-2 flex items-center gap-1 text-sm font-semibold text-primary">
+        <span className="mt-2 flex items-center gap-1 text-sm font-semibold text-accent">
           {buttonLabel}
           <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
         </span>

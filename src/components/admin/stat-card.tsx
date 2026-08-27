@@ -13,7 +13,7 @@ export function StatCard({
 }) {
   return (
     <Card className="flex items-center gap-4 p-5">
-      <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+      <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent">
         <Icon className="size-5" />
       </span>
       <div>

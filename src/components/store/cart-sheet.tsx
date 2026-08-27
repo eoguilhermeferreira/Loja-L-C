@@ -118,7 +118,7 @@ export function CartSheet() {
                   Falta {formatPrice(missingForFreeShipping)} para frete grátis
                 </p>
               ) : (
-                <p className="text-center text-xs font-medium text-primary">
+                <p className="text-center text-xs font-medium text-accent">
                   Você garantiu frete grátis 🎉
                 </p>
               )}

@@ -10,15 +10,15 @@ export function Footer() {
     <footer className="mt-16 border-t border-border bg-secondary/40">
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <h2 className="font-display text-lg font-semibold text-primary">{storeConfig.name}</h2>
+          <h2 className="font-display text-lg font-semibold text-accent">{storeConfig.name}</h2>
           <p className="mt-2 text-sm text-muted-foreground">{storeConfig.description}</p>
         </div>
 
         <div>
           <h3 className="text-sm font-semibold">Institucional</h3>
           <nav className="mt-2 flex flex-col gap-1.5 text-sm text-muted-foreground">
-            <Link href="/produtos" className="hover:text-primary">Todos os produtos</Link>
-            <Link href="/carrinho" className="hover:text-primary">Meu carrinho</Link>
+            <Link href="/produtos" className="hover:text-accent">Todos os produtos</Link>
+            <Link href="/carrinho" className="hover:text-accent">Meu carrinho</Link>
           </nav>
         </div>
 
@@ -29,13 +29,13 @@ export function Footer() {
               href={`https://wa.me/${storeConfig.contact.whatsapp}`}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-2 hover:text-primary"
+              className="flex items-center gap-2 hover:text-accent"
             >
               <WhatsAppIcon className="size-4" /> WhatsApp
             </a>
             <a
               href={`mailto:${storeConfig.contact.email}`}
-              className="flex items-center gap-2 hover:text-primary"
+              className="flex items-center gap-2 hover:text-accent"
             >
               <Mail className="size-4" /> {storeConfig.contact.email}
             </a>
@@ -51,7 +51,7 @@ export function Footer() {
             href={storeConfig.contact.instagram}
             target="_blank"
             rel="noreferrer"
-            className="mt-2 flex items-center gap-2 text-sm text-muted-foreground hover:text-primary"
+            className="mt-2 flex items-center gap-2 text-sm text-muted-foreground hover:text-accent"
           >
             <InstagramIcon className="size-4" /> Instagram
           </a>

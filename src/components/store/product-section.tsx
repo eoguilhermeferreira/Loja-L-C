@@ -21,7 +21,7 @@ export function ProductSection({
         <h2 className="font-display text-xl font-semibold sm:text-2xl">{title}</h2>
         <Link
           href={href}
-          className="flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+          className="flex items-center gap-1 text-sm font-medium text-accent hover:underline"
         >
           Ver tudo <ArrowRight className="size-4" />
         </Link>

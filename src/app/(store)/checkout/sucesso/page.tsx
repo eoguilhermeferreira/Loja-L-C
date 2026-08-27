@@ -16,7 +16,7 @@ export default async function CheckoutSucessoPage({
 
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-4 px-4 py-24 text-center">
-      <CheckCircle2 className="size-16 text-primary" />
+      <CheckCircle2 className="size-16 text-accent" />
       <h1 className="font-display text-2xl font-semibold">Pagamento confirmado!</h1>
       <p className="text-muted-foreground">
         {pedido ? `Seu pedido #${pedido} foi recebido e já está sendo preparado.` :

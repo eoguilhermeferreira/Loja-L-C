@@ -42,7 +42,7 @@ export function Header({ categories }: { categories: Category[] }) {
           </SheetTrigger>
           <SheetContent side="left" className="flex flex-col gap-6">
             <SheetHeader>
-              <SheetTitle className="font-display text-xl">{storeConfig.name}</SheetTitle>
+              <SheetTitle className="font-display text-xl text-accent">{storeConfig.name}</SheetTitle>
             </SheetHeader>
             <nav className="flex flex-col gap-1">
               <SheetClose asChild>
@@ -64,7 +64,7 @@ export function Header({ categories }: { categories: Category[] }) {
           </SheetContent>
         </Sheet>
 
-        <Link href="/" className="font-display text-xl font-semibold tracking-tight text-primary">
+        <Link href="/" className="font-display text-xl font-semibold tracking-tight text-accent">
           {storeConfig.name}
         </Link>
 
@@ -73,7 +73,7 @@ export function Header({ categories }: { categories: Category[] }) {
             <Link
               key={category.id}
               href={`/categoria/${category.slug}`}
-              className="text-sm font-medium text-foreground/80 hover:text-primary"
+              className="text-sm font-medium text-foreground/80 hover:text-accent"
             >
               {category.name}
             </Link>

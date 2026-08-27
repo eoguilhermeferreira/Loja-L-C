@@ -6,7 +6,7 @@
 :root {
   --radius: 0.5rem;
 
-  /* L&C Imports — verde petróleo + dourado (paleta própria, não reaproveita o roxo de referência) */
+  /* L&C Imports — preto e dourado (identidade da marca) */
   --background: #faf9f5;
   --foreground: #191914;
   --card: #ffffff;
@@ -14,11 +14,11 @@
   --popover: #ffffff;
   --popover-foreground: #191914;
 
-  --primary: #0e5c4a;
-  --primary-foreground: #f7fbf9;
+  --primary: #141414;
+  --primary-foreground: #f7f5ef;
 
-  --secondary: #eef1ea;
-  --secondary-foreground: #1f2a24;
+  --secondary: #efece4;
+  --secondary-foreground: #1f1f1c;
 
   --muted: #f1efe7;
   --muted-foreground: #6b6a5f;
@@ -31,13 +31,13 @@
 
   --border: #e5e2d6;
   --input: #e5e2d6;
-  --ring: #0e5c4a;
+  --ring: #141414;
 
-  --chart-1: #0e5c4a;
+  --chart-1: #141414;
   --chart-2: #c9a15c;
-  --chart-3: #3f7d6a;
+  --chart-3: #3f3f3f;
   --chart-4: #9c7a3c;
-  --chart-5: #274b40;
+  --chart-5: #6b6b6b;
 }
 
 .dark {
@@ -48,13 +48,13 @@
   --popover: #171b18;
   --popover-foreground: #f2f0e8;
 
-  --primary: #2f9c7c;
-  --primary-foreground: #08150f;
+  --primary: #f2ede2;
+  --primary-foreground: #14110a;
 
-  --secondary: #1c211d;
+  --secondary: #1c1c1a;
   --secondary-foreground: #f2f0e8;
 
-  --muted: #1c211d;
+  --muted: #1c1c1a;
   --muted-foreground: #a4a294;
 
   --accent: #dcb872;
@@ -63,15 +63,15 @@
   --destructive: #e2694a;
   --destructive-foreground: #fef6f2;
 
-  --border: #262c26;
-  --input: #262c26;
-  --ring: #2f9c7c;
+  --border: #2a2a27;
+  --input: #2a2a27;
+  --ring: #f2ede2;
 
-  --chart-1: #2f9c7c;
+  --chart-1: #f2ede2;
   --chart-2: #dcb872;
-  --chart-3: #5fb79c;
+  --chart-3: #a4a294;
   --chart-4: #c9a15c;
-  --chart-5: #3f7d6a;
+  --chart-5: #6b6b68;
 }
 
 @theme inline {

@@ -33,11 +33,11 @@ export default async function ProdutoPage({
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
       <nav className="mb-6 flex flex-wrap items-center gap-1 text-sm text-muted-foreground">
-        <Link href="/" className="hover:text-primary">Início</Link>
+        <Link href="/" className="hover:text-accent">Início</Link>
         <span>/</span>
         {product.categories && (
           <>
-            <Link href={`/categoria/${product.categories.slug}`} className="hover:text-primary">
+            <Link href={`/categoria/${product.categories.slug}`} className="hover:text-accent">
               {product.categories.name}
             </Link>
             <span>/</span>
