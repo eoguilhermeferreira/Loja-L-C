@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { Mail, MapPin } from "lucide-react";
 
+import { FacebookIcon } from "@/components/icons/facebook-icon";
 import { InstagramIcon } from "@/components/icons/instagram-icon";
+import { TikTokIcon } from "@/components/icons/tiktok-icon";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { storeConfig } from "@/config/store";
 
@@ -47,14 +49,32 @@ export function Footer() {
 
         <div>
           <h3 className="text-sm font-semibold">Redes sociais</h3>
-          <a
-            href={storeConfig.contact.instagram}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-2 flex items-center gap-2 text-sm text-muted-foreground hover:text-accent"
-          >
-            <InstagramIcon className="size-4" /> Instagram
-          </a>
+          <div className="mt-2 flex flex-col gap-2 text-sm text-muted-foreground">
+            <a
+              href={storeConfig.contact.instagram}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 hover:text-accent"
+            >
+              <InstagramIcon className="size-4" /> Instagram
+            </a>
+            <a
+              href={storeConfig.contact.tiktok}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 hover:text-accent"
+            >
+              <TikTokIcon className="size-4" /> TikTok
+            </a>
+            <a
+              href={storeConfig.contact.facebook}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 hover:text-accent"
+            >
+              <FacebookIcon className="size-4" /> Facebook
+            </a>
+          </div>
         </div>
       </div>
 

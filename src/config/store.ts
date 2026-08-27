@@ -13,6 +13,8 @@ export const storeConfig = {
     whatsapp: "5514997998468",
     email: "lcimportsavare@gmail.com",
     instagram: "https://instagram.com/lc.importsoficial_",
+    tiktok: "https://www.tiktok.com/@lc.imports.ofc",
+    facebook: "https://www.facebook.com/LCImports",
   },
 
   address: {
