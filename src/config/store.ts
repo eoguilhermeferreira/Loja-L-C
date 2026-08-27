@@ -10,9 +10,9 @@ export const storeConfig = {
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
 
   contact: {
-    whatsapp: "5511999999999",
-    email: "contato@lcimports.com.br",
-    instagram: "https://instagram.com/lcimports",
+    whatsapp: "5514997998468",
+    email: "lcimportsavare@gmail.com",
+    instagram: "https://instagram.com/lc.importsoficial_",
   },
 
   address: {
