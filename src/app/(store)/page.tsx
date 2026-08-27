@@ -33,7 +33,7 @@ export default async function HomePage() {
 
       <Reveal className="grid gap-4 sm:grid-cols-2">
         <PromoBanner
-          imageUrl="https://placehold.co/900x700/0e5c4a/f7fbf9?font=montserrat&text=Roupas+Masculinas"
+          imageUrl="https://d8j0ntlcm91z4.cloudfront.net/user_3DddW0JRUDw0aHbl43U3f1JTg8N/hf_20260827_022424_7e0d012a-60ba-420f-a189-3573b957cedd.png"
           eyebrow="Para eles"
           title="Estilo que fala por você"
           description="Peças essenciais pra montar looks confiantes no dia a dia."
@@ -41,7 +41,7 @@ export default async function HomePage() {
           href="/categoria/roupas-masculinas"
         />
         <PromoBanner
-          imageUrl="https://placehold.co/900x700/c9a15c/201804?font=montserrat&text=Roupas+Femininas"
+          imageUrl="https://d8j0ntlcm91z4.cloudfront.net/user_3DddW0JRUDw0aHbl43U3f1JTg8N/hf_20260827_022446_d4f98bb2-1547-416b-beb2-8ce3ebfedd77.png"
           eyebrow="Para elas"
           title="Presenteie quem você ama"
           description="Vestidos, blusas e muito mais pra ela se sentir incrível."
@@ -72,7 +72,7 @@ export default async function HomePage() {
 
       <Reveal>
         <PromoBanner
-          imageUrl="https://placehold.co/900x700/3f7d6a/f7fbf9?font=montserrat&text=Fale+Conosco"
+          imageUrl="https://d8j0ntlcm91z4.cloudfront.net/user_3DddW0JRUDw0aHbl43U3f1JTg8N/hf_20260827_022508_4fb4a4f3-01fe-4c98-8c6f-71f0f9100f4c.png"
           eyebrow="Atendimento"
           title="Ainda com dúvida sobre o tamanho ideal?"
           description="Nosso time responde rapidinho pelo WhatsApp e te ajuda a escolher certo."
