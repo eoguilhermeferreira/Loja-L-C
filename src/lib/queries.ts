@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/public";
 import type { Category, HomeSection, ProductWithRelations } from "@/types/database.types";
 
 const PRODUCT_SELECT = `

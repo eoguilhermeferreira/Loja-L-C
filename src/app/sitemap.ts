@@ -1,10 +1,10 @@
 import type { MetadataRoute } from "next";
 
 import { storeConfig } from "@/config/store";
-import { createClient } from "@/lib/supabase/server";
+import { createClient } from "@/lib/supabase/public";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const supabase = await createClient();
+  const supabase = createClient();
   const base = storeConfig.siteUrl;
 
   const [{ data: products }, { data: categories }] = await Promise.all([
