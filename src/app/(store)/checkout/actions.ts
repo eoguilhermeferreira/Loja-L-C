@@ -24,6 +24,55 @@ export interface CreateOrderResult {
 }
 
 /**
+ * Cadastra (ou atualiza, se já existir pelo e-mail) o cliente a partir dos
+ * dados do checkout. Além do cadastro manual em /admin/clientes, toda
+ * compra gera/atualiza automaticamente o cliente correspondente. Nunca
+ * bloqueia a criação do pedido — se falhar, o pedido segue sem customer_id.
+ */
+async function upsertCustomerFromCheckout(
+  supabase: ReturnType<typeof createAdminClient>,
+  customer: z.infer<typeof checkoutSchema>
+): Promise<string | null> {
+  try {
+    const customerData = {
+      name: customer.customerName,
+      email: customer.email,
+      phone: onlyDigits(customer.phone),
+      cep: onlyDigits(customer.cep),
+      street: customer.street,
+      address_number: customer.number,
+      complement: customer.complement || null,
+      neighborhood: customer.neighborhood,
+      city: customer.city,
+      state: customer.state.toUpperCase(),
+    };
+
+    const { data: existing } = await supabase
+      .from("customers")
+      .select("id")
+      .eq("email", customer.email)
+      .maybeSingle();
+
+    if (existing) {
+      await supabase.from("customers").update(customerData).eq("id", existing.id);
+      return existing.id;
+    }
+
+    const { data: created, error } = await supabase
+      .from("customers")
+      .insert(customerData)
+      .select("id")
+      .single();
+
+    if (error || !created) return null;
+    return created.id;
+  } catch (error) {
+    console.error("Erro ao cadastrar cliente automaticamente", error);
+    return null;
+  }
+}
+
+/**
  * Cria o pedido no banco. Os preços são sempre buscados no servidor a
  * partir dos produtos — nunca confiamos no valor calculado no carrinho do
  * navegador.
@@ -93,6 +142,7 @@ export async function createOrder(input: unknown): Promise<CreateOrderResult> {
 
   const shipping = calculateShipping();
   const total = subtotal + shipping.cost;
+  const customerId = await upsertCustomerFromCheckout(supabase, customer);
 
   const { data: order, error: orderError } = await supabase
     .from("orders")
@@ -100,6 +150,7 @@ export async function createOrder(input: unknown): Promise<CreateOrderResult> {
       customer_name: customer.customerName,
       email: customer.email,
       phone: onlyDigits(customer.phone),
+      customer_id: customerId,
       shipping_address: {
         cep: onlyDigits(customer.cep),
         street: customer.street,
