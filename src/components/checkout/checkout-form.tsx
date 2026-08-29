@@ -61,7 +61,7 @@ export function CheckoutForm() {
   );
   const [pixData, setPixData] = React.useState<{ code: string; base64?: string } | null>(null);
 
-  const shipping = calculateShipping(subtotal);
+  const shipping = calculateShipping();
 
   function updateField<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((current) => ({ ...current, [key]: value }));
@@ -347,7 +347,7 @@ export function CheckoutForm() {
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">{shipping.label}</span>
-            <span>{shipping.isFree ? "Grátis" : formatPrice(shipping.cost)}</span>
+            <span>{formatPrice(shipping.cost)}</span>
           </div>
         </div>
         <div className="flex justify-between border-t border-border pt-3 font-display text-lg font-semibold">

@@ -23,17 +23,15 @@ export const storeConfig = {
   },
 
   /**
-   * Frete simplificado: valor fixo + gratuidade acima de um teto.
-   * A loja de referência usava a API do Melhor Envio; aqui optamos por um
-   * cálculo fixo, configurável direto no código (dá pra evoluir depois
-   * para faixas por região sem mudar a assinatura de `calculateShipping`).
+   * Frete simplificado: valor fixo, sem gratuidade por faixa de valor —
+   * a loja de referência usava a API do Melhor Envio; aqui optamos por um
+   * valor fixo configurável direto no código.
    *
    * Entrega restrita à cidade da loja por enquanto — `deliveryCity`/
    * `deliveryState` são checados no schema de checkout (client e server).
    */
   shipping: {
     flatRateCents: 1000,
-    freeAboveCents: 29900,
     deliveryCity: "Avaré",
     deliveryState: "SP",
   },

@@ -91,7 +91,7 @@ export async function createOrder(input: unknown): Promise<CreateOrderResult> {
     });
   }
 
-  const shipping = calculateShipping(subtotal);
+  const shipping = calculateShipping();
   const total = subtotal + shipping.cost;
 
   const { data: order, error: orderError } = await supabase

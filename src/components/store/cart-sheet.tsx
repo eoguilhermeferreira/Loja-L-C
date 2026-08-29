@@ -16,11 +16,9 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { formatPrice } from "@/lib/format";
-import { amountToFreeShipping } from "@/lib/shipping";
 
 export function CartSheet() {
   const { items, itemCount, subtotal, setQuantity, removeItem, isHydrated } = useCart();
-  const missingForFreeShipping = amountToFreeShipping(subtotal);
 
   return (
     <Sheet>
@@ -113,15 +111,6 @@ export function CartSheet() {
             </div>
 
             <SheetFooter className="gap-3 border-t border-border pt-4">
-              {missingForFreeShipping > 0 ? (
-                <p className="text-center text-xs text-muted-foreground">
-                  Falta {formatPrice(missingForFreeShipping)} para frete grátis
-                </p>
-              ) : (
-                <p className="text-center text-xs font-medium text-accent">
-                  Você garantiu frete grátis 🎉
-                </p>
-              )}
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Subtotal</span>
                 <span className="font-display text-base font-semibold">
