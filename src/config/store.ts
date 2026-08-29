@@ -6,7 +6,7 @@ export const storeConfig = {
   name: "L&C Imports",
   shortName: "L&C",
   description:
-    "Roupas masculinas e femininas, tênis e acessórios com frete rápido para todo o Brasil.",
+    "Roupas masculinas e femininas, tênis e acessórios com entrega local em Avaré/SP.",
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
 
   contact: {
@@ -18,7 +18,7 @@ export const storeConfig = {
   },
 
   address: {
-    city: "São Paulo",
+    city: "Avaré",
     state: "SP",
   },
 
@@ -27,9 +27,14 @@ export const storeConfig = {
    * A loja de referência usava a API do Melhor Envio; aqui optamos por um
    * cálculo fixo, configurável direto no código (dá pra evoluir depois
    * para faixas por região sem mudar a assinatura de `calculateShipping`).
+   *
+   * Entrega restrita à cidade da loja por enquanto — `deliveryCity`/
+   * `deliveryState` são checados no schema de checkout (client e server).
    */
   shipping: {
-    flatRateCents: 1990,
+    flatRateCents: 1000,
     freeAboveCents: 29900,
+    deliveryCity: "Avaré",
+    deliveryState: "SP",
   },
 } as const;
