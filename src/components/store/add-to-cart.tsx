@@ -1,7 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Minus, Plus, ShoppingBag } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Minus, Plus, ShoppingBag, Zap } from "lucide-react";
 import { toast } from "sonner";
 
 import { useCart } from "@/components/cart/cart-provider";
@@ -10,6 +11,7 @@ import { cn } from "@/lib/utils";
 import type { ProductWithRelations } from "@/types/database.types";
 
 export function AddToCart({ product }: { product: ProductWithRelations }) {
+  const router = useRouter();
   const { addItem } = useCart();
   const hasVariations = product.product_variations.length > 0;
   const [variationId, setVariationId] = React.useState(
@@ -22,8 +24,7 @@ export function AddToCart({ product }: { product: ProductWithRelations }) {
   const canBuy = product.is_active && stock > 0;
   const unitPrice = product.promo_price ?? product.price;
 
-  function handleAdd() {
-    if (!canBuy) return;
+  function addToCart() {
     addItem(
       {
         productId: product.id,
@@ -38,7 +39,18 @@ export function AddToCart({ product }: { product: ProductWithRelations }) {
       },
       quantity
     );
+  }
+
+  function handleAdd() {
+    if (!canBuy) return;
+    addToCart();
     toast.success("Adicionado ao carrinho", { description: product.name });
+  }
+
+  function handleBuyNow() {
+    if (!canBuy) return;
+    addToCart();
+    router.push("/checkout");
   }
 
   return (
@@ -71,26 +83,31 @@ export function AddToCart({ product }: { product: ProductWithRelations }) {
       )}
 
       {canBuy ? (
-        <div className="flex items-center gap-3">
-          <div className="flex items-center rounded-md border border-input">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-            >
-              <Minus className="size-4" />
-            </Button>
-            <span className="w-8 text-center text-sm">{quantity}</span>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setQuantity((q) => Math.min(stock, q + 1))}
-            >
-              <Plus className="size-4" />
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center rounded-md border border-input">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+              >
+                <Minus className="size-4" />
+              </Button>
+              <span className="w-8 text-center text-sm">{quantity}</span>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setQuantity((q) => Math.min(stock, q + 1))}
+              >
+                <Plus className="size-4" />
+              </Button>
+            </div>
+            <Button size="lg" variant="outline" className="flex-1" onClick={handleAdd}>
+              <ShoppingBag /> Adicionar ao carrinho
             </Button>
           </div>
-          <Button size="lg" className="flex-1" onClick={handleAdd}>
-            <ShoppingBag /> Adicionar ao carrinho
+          <Button size="lg" className="w-full" onClick={handleBuyNow}>
+            <Zap /> Comprar agora
           </Button>
         </div>
       ) : (
