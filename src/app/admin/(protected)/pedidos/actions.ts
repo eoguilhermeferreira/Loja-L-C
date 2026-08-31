@@ -54,3 +54,13 @@ export async function updateOrderStatus(
   revalidatePath("/admin");
   return {};
 }
+
+export async function deleteOrder(id: string): Promise<{ error?: string }> {
+  const supabase = await createClient();
+  const { error } = await supabase.from("orders").delete().eq("id", id);
+  if (error) return { error: error.message };
+
+  revalidatePath("/admin/pedidos");
+  revalidatePath("/admin");
+  return {};
+}

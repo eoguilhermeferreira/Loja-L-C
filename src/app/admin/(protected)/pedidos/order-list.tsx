@@ -2,9 +2,22 @@
 
 import Link from "next/link";
 import * as React from "react";
+import { Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
-import { getOrders } from "@/app/admin/(protected)/pedidos/actions";
+import { deleteOrder, getOrders } from "@/app/admin/(protected)/pedidos/actions";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { DeliveryStatusBadge, PaymentStatusBadge } from "@/components/admin/status-badge";
+import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatDateTime, formatPrice } from "@/lib/format";
 import type { OrderWithItems } from "@/types/database.types";
@@ -13,6 +26,7 @@ const POLL_INTERVAL_MS = 8000;
 
 export function OrderList({ initialOrders }: { initialOrders: OrderWithItems[] }) {
   const [orders, setOrders] = React.useState(initialOrders);
+  const [, startTransition] = React.useTransition();
 
   React.useEffect(() => {
     const interval = setInterval(async () => {
@@ -23,6 +37,18 @@ export function OrderList({ initialOrders }: { initialOrders: OrderWithItems[] }
 
     return () => clearInterval(interval);
   }, []);
+
+  function handleDelete(id: string) {
+    startTransition(async () => {
+      const result = await deleteOrder(id);
+      if (result.error) {
+        toast.error(result.error);
+        return;
+      }
+      setOrders((current) => current.filter((order) => order.id !== id));
+      toast.success("Pedido excluído");
+    });
+  }
 
   return (
     <div className="rounded-lg border border-border bg-card">
@@ -35,6 +61,7 @@ export function OrderList({ initialOrders }: { initialOrders: OrderWithItems[] }
             <TableHead>Total</TableHead>
             <TableHead>Pagamento</TableHead>
             <TableHead>Entrega</TableHead>
+            <TableHead className="w-12" />
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -57,11 +84,36 @@ export function OrderList({ initialOrders }: { initialOrders: OrderWithItems[] }
               <TableCell>
                 <DeliveryStatusBadge status={order.delivery_status} />
               </TableCell>
+              <TableCell>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      aria-label="Excluir pedido"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Trash2 className="size-4 text-destructive" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Excluir pedido #{order.order_number}?</AlertDialogTitle>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => handleDelete(order.id)}>
+                        Excluir
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </TableCell>
             </TableRow>
           ))}
           {orders.length === 0 && (
             <TableRow>
-              <TableCell colSpan={6} className="py-10 text-center text-muted-foreground">
+              <TableCell colSpan={7} className="py-10 text-center text-muted-foreground">
                 Nenhum pedido ainda.
               </TableCell>
             </TableRow>
