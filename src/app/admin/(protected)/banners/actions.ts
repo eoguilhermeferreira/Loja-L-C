@@ -5,12 +5,16 @@ import { z } from "zod";
 
 import { createClient } from "@/lib/supabase/server";
 
+const PLACEMENTS = ["carousel", "promo_left", "promo_right", "square", "promo_wide"] as const;
+
 const bannerSchema = z.object({
   title: z.string().trim().nullable(),
   description: z.string().trim().nullable(),
+  eyebrow: z.string().trim().nullable(),
   image_url: z.string().trim().min(1, "Envie uma imagem"),
   button_label: z.string().trim().nullable(),
   button_link: z.string().trim().nullable(),
+  placement: z.enum(PLACEMENTS),
   is_active: z.boolean(),
   display_order: z.number().int().default(0),
 });
@@ -23,9 +27,11 @@ function parseFormData(formData: FormData) {
   return bannerSchema.parse({
     title: optional(formData.get("title")),
     description: optional(formData.get("description")),
+    eyebrow: optional(formData.get("eyebrow")),
     image_url: formData.get("image_url"),
     button_label: optional(formData.get("button_label")),
     button_link: optional(formData.get("button_link")),
+    placement: formData.get("placement") || "carousel",
     is_active: formData.get("is_active") === "on",
     display_order: Number(formData.get("display_order") ?? 0),
   });

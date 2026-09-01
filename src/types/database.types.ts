@@ -7,6 +7,7 @@
 
 export type HomeSection = "mais_vendidos" | "novidades" | "ofertas";
 export type ProductGender = "masculino" | "feminino" | "unissex";
+export type BannerPlacement = "carousel" | "promo_left" | "promo_right" | "square" | "promo_wide";
 export type PaymentMethod = "pix" | "cartao_credito" | "cartao_debito" | "boleto";
 export type PaymentStatus = "pendente" | "pago" | "falhou" | "reembolsado";
 export type DeliveryStatus =
@@ -133,9 +134,11 @@ export interface Database {
           id: string;
           title: string | null;
           description: string | null;
+          eyebrow: string | null;
           image_url: string;
           button_label: string | null;
           button_link: string | null;
+          placement: BannerPlacement;
           is_active: boolean;
           display_order: number;
           created_at: string;

@@ -29,21 +29,38 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import type { Banner } from "@/types/database.types";
+import type { Banner, BannerPlacement } from "@/types/database.types";
+
+const PLACEMENT_LABELS: Record<BannerPlacement, string> = {
+  carousel: "Carrossel do topo",
+  promo_left: "Promo — bloco esquerdo",
+  promo_right: "Promo — bloco direito",
+  square: "Banner quadrado (grande)",
+  promo_wide: "Banner largo (atendimento etc.)",
+};
 
 export function BannerManager({ banners }: { banners: Banner[] }) {
   const [editing, setEditing] = React.useState<Banner | null>(null);
   const [open, setOpen] = React.useState(false);
   const [imageUrl, setImageUrl] = React.useState<string | null>(null);
   const [isActive, setIsActive] = React.useState(true);
+  const [placement, setPlacement] = React.useState<BannerPlacement>("carousel");
   const [isPending, startTransition] = React.useTransition();
 
   function openCreate() {
     setEditing(null);
     setImageUrl(null);
     setIsActive(true);
+    setPlacement("carousel");
     setOpen(true);
   }
 
@@ -51,6 +68,7 @@ export function BannerManager({ banners }: { banners: Banner[] }) {
     setEditing(banner);
     setImageUrl(banner.image_url);
     setIsActive(banner.is_active);
+    setPlacement(banner.placement);
     setOpen(true);
   }
 
@@ -95,6 +113,29 @@ export function BannerManager({ banners }: { banners: Banner[] }) {
               <div>
                 <Label className="mb-1.5 block">Imagem</Label>
                 <ImageUpload bucket="banners" value={imageUrl} onChange={setImageUrl} name="image_url" />
+              </div>
+              <div>
+                <Label className="mb-1.5 block">Onde aparece</Label>
+                <Select value={placement} onValueChange={(v) => setPlacement(v as BannerPlacement)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(PLACEMENT_LABELS).map(([value, label]) => (
+                      <SelectItem key={value} value={value}>
+                        {label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <input type="hidden" name="placement" value={placement} />
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Carrossel do topo aceita vários banners; os outros mostram só o mais recente ativo.
+                </p>
+              </div>
+              <div>
+                <Label className="mb-1.5 block">Selo (opcional, ex: &quot;Para eles&quot;)</Label>
+                <Input name="eyebrow" defaultValue={editing?.eyebrow ?? ""} />
               </div>
               <div>
                 <Label className="mb-1.5 block">Título (opcional)</Label>
@@ -147,6 +188,7 @@ export function BannerManager({ banners }: { banners: Banner[] }) {
                   {banner.is_active ? "Ativo" : "Inativo"}
                 </Badge>
               </div>
+              <span className="text-xs text-muted-foreground">{PLACEMENT_LABELS[banner.placement]}</span>
               <div className="flex justify-end gap-1">
                 <Button size="icon" variant="ghost" onClick={() => openEdit(banner)}>
                   <Pencil className="size-4" />
