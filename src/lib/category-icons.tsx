@@ -1,6 +1,6 @@
 import {
   Sparkles,
-  Footprints,
+  SportShoe,
   Smartphone,
   Droplet,
   Watch,
@@ -9,10 +9,9 @@ import {
   Backpack,
   Gem,
   Shirt,
-  Venus,
   Snowflake,
   Sun,
-  Layers,
+  Package,
   Columns2,
   ShoppingBag,
   type LucideIcon,
@@ -24,7 +23,7 @@ import {
  */
 export const CATEGORY_ICONS: Record<string, LucideIcon> = {
   perfumes: Sparkles,
-  tenis: Footprints,
+  tenis: SportShoe,
   celulares: Smartphone,
   cremes: Droplet,
   relogios: Watch,
@@ -38,8 +37,8 @@ export const CATEGORY_ICONS: Record<string, LucideIcon> = {
   "blusa-frio": Snowflake,
   calca: Columns2,
   short: Sun,
-  conjunto: Layers,
-  vestido: Venus,
+  conjunto: Package,
+  vestido: Sparkles,
 };
 
 export function getCategoryIcon(name: string | null): LucideIcon {
