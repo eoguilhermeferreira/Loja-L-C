@@ -44,7 +44,6 @@ export function ProductForm({
 }) {
   const router = useRouter();
   const [name, setName] = React.useState(product?.name ?? "");
-  const [brand, setBrand] = React.useState(product?.brand ?? "");
   const [description, setDescription] = React.useState(product?.description ?? "");
   const [categoryId, setCategoryId] = React.useState(product?.category_id ?? "__none__");
   const [gender, setGender] = React.useState<ProductGender>(product?.gender ?? "unissex");
@@ -109,7 +108,7 @@ export function ProductForm({
     setIsSaving(true);
     const result = await onSave({
       name: name.trim(),
-      brand: brand.trim() || null,
+      brand: null,
       description: description.trim() || null,
       category_id: categoryId === "__none__" ? null : categoryId,
       gender,
@@ -144,10 +143,6 @@ export function ProductForm({
           <div className="sm:col-span-2">
             <Label className="mb-1.5 block">Nome</Label>
             <Input value={name} onChange={(e) => setName(e.target.value)} required />
-          </div>
-          <div>
-            <Label className="mb-1.5 block">Marca</Label>
-            <Input value={brand ?? ""} onChange={(e) => setBrand(e.target.value)} />
           </div>
           <div>
             <Label className="mb-1.5 block">Categoria</Label>
