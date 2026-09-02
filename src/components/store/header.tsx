@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import * as React from "react";
-import { Menu, Search } from "lucide-react";
+import { Menu, Search, X } from "lucide-react";
 
 import { CartSheet } from "@/components/store/cart-sheet";
 import { Button } from "@/components/ui/button";
@@ -25,12 +25,19 @@ export function Header({ categories }: { categories: Category[] }) {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const topLevel = categories.filter((c) => !c.parent_id);
+  const [mobileSearchOpen, setMobileSearchOpen] = React.useState(false);
+  const mobileSearchRef = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    if (mobileSearchOpen) mobileSearchRef.current?.focus();
+  }, [mobileSearchOpen]);
 
   function handleSearch(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const search = new FormData(event.currentTarget).get("q");
     if (typeof search === "string" && search.trim()) {
       router.push(`/produtos?busca=${encodeURIComponent(search.trim())}`);
+      setMobileSearchOpen(false);
     }
   }
 
@@ -65,6 +72,11 @@ export function Header({ categories }: { categories: Category[] }) {
               <SheetTitle className="font-display text-xl text-accent">{storeConfig.name}</SheetTitle>
             </SheetHeader>
             <nav className="flex flex-col gap-1">
+              <SheetClose asChild>
+                <Link href="/" className="rounded-md px-2 py-2 text-sm font-medium hover:bg-secondary">
+                  Início
+                </Link>
+              </SheetClose>
               <SheetClose asChild>
                 <Link href="/produtos" className="rounded-md px-2 py-2 text-sm font-medium hover:bg-secondary">
                   Todos os produtos
@@ -122,19 +134,47 @@ export function Header({ categories }: { categories: Category[] }) {
 
         <div className="ml-auto flex items-center gap-1 md:ml-0">
           <Button
-            asChild
+            type="button"
             variant="ghost"
             size="icon"
             className={cn("md:hidden", isHome && "hover:bg-white/10")}
             aria-label="Buscar"
+            onClick={() => setMobileSearchOpen((open) => !open)}
           >
-            <Link href="/produtos">
-              <Search />
-            </Link>
+            <Search />
           </Button>
           <CartSheet light={isHome} />
         </div>
       </div>
+
+      {mobileSearchOpen && (
+        <div
+          className={cn(
+            "border-t px-4 py-2 md:hidden",
+            isHome ? "border-white/10 bg-black/70 backdrop-blur" : "border-border bg-background"
+          )}
+        >
+          <form onSubmit={handleSearch} className="flex items-center gap-2">
+            <Search className="size-4 shrink-0 text-muted-foreground" />
+            <Input
+              ref={mobileSearchRef}
+              name="q"
+              placeholder="Buscar produtos ou código"
+              className={cn("flex-1", isHome && "border-transparent bg-white/95 text-foreground")}
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label="Fechar busca"
+              onClick={() => setMobileSearchOpen(false)}
+              className={cn(isHome && "text-white hover:bg-white/10")}
+            >
+              <X />
+            </Button>
+          </form>
+        </div>
+      )}
     </header>
   );
 }

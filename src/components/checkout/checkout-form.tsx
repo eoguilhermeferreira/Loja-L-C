@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { createOrder, getOrderStatus, type SubmitPaymentResult } from "@/app/(store)/checkout/actions";
 import { useCart } from "@/components/cart/cart-provider";
 import { PaymentBrickForm } from "@/components/checkout/payment-brick-form";
+import { BackButton } from "@/components/store/back-button";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -168,6 +169,7 @@ export function CheckoutForm() {
   if (isHydrated && items.length === 0 && step === "form") {
     return (
       <div className="mx-auto flex max-w-xl flex-col items-center gap-4 px-4 py-24 text-center">
+        <BackButton fallbackHref="/produtos" />
         <ShoppingBag className="size-12 text-muted-foreground" />
         <h1 className="font-display text-2xl font-semibold">Seu carrinho está vazio</h1>
         <Button asChild size="lg">
@@ -215,7 +217,9 @@ export function CheckoutForm() {
   }
 
   return (
-    <div className="mx-auto grid max-w-5xl gap-8 px-4 py-8 lg:grid-cols-3">
+    <div className="mx-auto max-w-5xl px-4 py-8">
+      <BackButton fallbackHref="/carrinho" />
+      <div className="grid gap-8 lg:grid-cols-3">
       <div className="lg:col-span-2">
         {step === "form" ? (
           <form onSubmit={handleSubmit} className="space-y-8">
@@ -355,6 +359,7 @@ export function CheckoutForm() {
           <span>{formatPrice(subtotal + shipping.cost)}</span>
         </div>
       </Card>
+      </div>
     </div>
   );
 }
