@@ -1,5 +1,4 @@
 import { BannerCarousel } from "@/components/store/banner-carousel";
-import { CampaignVideo } from "@/components/store/campaign-video";
 import { CategoryGrid } from "@/components/store/category-grid";
 import { PromoBanner, PromoSquareBanner } from "@/components/store/promo-banner";
 import { ProductSection } from "@/components/store/product-section";
@@ -42,15 +41,11 @@ export default async function HomePage() {
 
   return (
     <>
-      <BannerCarousel banners={carouselBanners} />
+      <BannerCarousel banners={carouselBanners} videoSrc={CAMPAIGN_VIDEO_URL} />
 
       <div className="mx-auto flex max-w-7xl flex-col gap-14 px-4 py-6 sm:py-8">
         <Reveal>
           <CategoryGrid categories={categories} />
-        </Reveal>
-
-        <Reveal>
-          <CampaignVideo src={CAMPAIGN_VIDEO_URL} />
         </Reveal>
 
         <Reveal>
