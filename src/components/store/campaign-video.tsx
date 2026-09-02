@@ -15,6 +15,10 @@ export function CampaignVideo({ src }: { src: string }) {
     const video = videoRef.current;
     if (!video) return;
 
+    // Garante o estado mudo via propriedade do DOM: o atributo JSX nem
+    // sempre chega a tempo do navegador decidir se o autoplay é permitido.
+    video.muted = true;
+
     function resume() {
       video?.play().catch(() => {});
     }
@@ -23,6 +27,7 @@ export function CampaignVideo({ src }: { src: string }) {
       if (document.visibilityState === "visible") resume();
     }
 
+    resume();
     document.addEventListener("visibilitychange", handleVisibilityChange);
     video.addEventListener("pause", resume);
 
