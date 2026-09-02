@@ -15,6 +15,14 @@ import type { Banner } from "@/types/database.types";
  * disparo de loadeddata/canplay em conexões mais lentas (comum no
  * celular, com o vídeo abaixo da dobra). Sem loop — ao terminar, avisa
  * o carrossel pra avançar.
+ *
+ * Importante: iOS bloqueia autoplay de qualquer vídeo (mesmo mudo) com
+ * o Modo de Baixa Energia ou "Reduzir Movimento" ativados — é uma
+ * política do sistema, nenhum código de site consegue driblar isso, o
+ * usuário precisa tocar no vídeo pra iniciar nesse caso. Por isso o
+ * vídeo NUNCA fica dentro do Link do slide (o toque nativo do Safari
+ * pra iniciar o vídeo engolia o clique antes de chegar no botão) — só o
+ * botão "Ver coleção" é um link de verdade, sempre clicável.
  */
 function VideoSlide({ src, onEnded }: { src: string; onEnded: () => void }) {
   function setVideoRef(node: HTMLVideoElement | null) {
@@ -92,56 +100,76 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
   const banner = slides[index] ?? slides[0];
   const isVideo = banner.placement === "video";
 
-  const slideContent = (
-    <>
-      {isVideo && banner.video_url ? (
-        <VideoSlide src={banner.video_url} onEnded={advance} />
-      ) : banner.image_url ? (
-        <Image
-          src={banner.image_url}
-          alt={banner.title ?? ""}
-          fill
-          priority={index === 0}
-          sizes="100vw"
-          className="object-cover"
-        />
-      ) : null}
-      {(banner.eyebrow || banner.title || banner.description || banner.button_label) && (
-        <div className="absolute inset-0 flex flex-col justify-end gap-2 bg-gradient-to-t from-black/60 via-black/10 to-transparent p-6 sm:p-10">
-          {banner.eyebrow && (
-            <span className="text-xs font-semibold uppercase tracking-wide text-accent">
-              {banner.eyebrow}
-            </span>
-          )}
-          {banner.title && (
-            <h2 className="font-display text-2xl font-semibold text-white sm:text-4xl">
-              {banner.title}
-            </h2>
-          )}
-          {banner.description && (
-            <p className="max-w-md text-sm text-white/90 sm:text-base">{banner.description}</p>
-          )}
-          {banner.button_label && (
-            <span className="mt-2 inline-flex w-fit items-center rounded-md bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground">
-              {banner.button_label}
-            </span>
-          )}
-        </div>
+  const media =
+    isVideo && banner.video_url ? (
+      <VideoSlide src={banner.video_url} onEnded={advance} />
+    ) : banner.image_url ? (
+      <Image
+        src={banner.image_url}
+        alt={banner.title ?? ""}
+        fill
+        priority={index === 0}
+        sizes="100vw"
+        className="object-cover"
+      />
+    ) : null;
+
+  const hasText = banner.eyebrow || banner.title || banner.description || banner.button_label;
+
+  const textOverlay = hasText && (
+    <div
+      className={cn(
+        "absolute inset-0 flex flex-col justify-end gap-2 bg-gradient-to-t from-black/60 via-black/10 to-transparent p-6 sm:p-10",
+        isVideo && "pointer-events-none"
       )}
+    >
+      {banner.eyebrow && (
+        <span className="text-xs font-semibold uppercase tracking-wide text-accent">
+          {banner.eyebrow}
+        </span>
+      )}
+      {banner.title && (
+        <h2 className="font-display text-2xl font-semibold text-white sm:text-4xl">
+          {banner.title}
+        </h2>
+      )}
+      {banner.description && (
+        <p className="max-w-md text-sm text-white/90 sm:text-base">{banner.description}</p>
+      )}
+      {banner.button_label &&
+        (isVideo && banner.button_link ? (
+          <Link
+            href={banner.button_link}
+            className="pointer-events-auto mt-2 inline-flex w-fit items-center rounded-md bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground"
+          >
+            {banner.button_label}
+          </Link>
+        ) : (
+          <span className="mt-2 inline-flex w-fit items-center rounded-md bg-accent px-4 py-2 text-sm font-semibold text-accent-foreground">
+            {banner.button_label}
+          </span>
+        ))}
+    </div>
+  );
+
+  const slideBody = (
+    <>
+      {media}
+      {textOverlay}
     </>
   );
 
   return (
     <div className="relative w-full overflow-hidden bg-muted">
-      {banner.button_link ? (
+      {!isVideo && banner.button_link ? (
         <Link
           href={banner.button_link}
           className="relative block aspect-[4/5] w-full sm:aspect-[21/9]"
         >
-          {slideContent}
+          {slideBody}
         </Link>
       ) : (
-        <div className="relative block aspect-[4/5] w-full sm:aspect-[21/9]">{slideContent}</div>
+        <div className="relative block aspect-[4/5] w-full sm:aspect-[21/9]">{slideBody}</div>
       )}
 
       {slides.length > 1 && (
