@@ -1,3 +1,4 @@
+import { ClickEffects } from "@/components/store/click-effects";
 import { Footer } from "@/components/store/footer";
 import { Header } from "@/components/store/header";
 import { WhatsAppFloatButton } from "@/components/store/whatsapp-float-button";
@@ -16,6 +17,7 @@ export default async function StoreLayout({ children }: { children: React.ReactN
       <main className="flex-1">{children}</main>
       <Footer />
       <WhatsAppFloatButton />
+      <ClickEffects />
     </div>
   );
 }
