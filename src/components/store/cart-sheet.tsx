@@ -16,14 +16,20 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { formatPrice } from "@/lib/format";
+import { cn } from "@/lib/utils";
 
-export function CartSheet() {
+export function CartSheet({ light = false }: { light?: boolean }) {
   const { items, itemCount, subtotal, setQuantity, removeItem, isHydrated } = useCart();
 
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" aria-label="Abrir carrinho" className="relative">
+        <Button
+          variant="ghost"
+          size="icon"
+          aria-label="Abrir carrinho"
+          className={cn("relative", light && "hover:bg-white/10")}
+        >
           <ShoppingBag />
           {isHydrated && itemCount > 0 && (
             <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-accent text-[11px] font-semibold text-accent-foreground">

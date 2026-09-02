@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import * as React from "react";
 import { Menu, Search } from "lucide-react";
 
@@ -16,11 +16,14 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
 import { storeConfig } from "@/config/store";
 import type { Category } from "@/types/database.types";
 
 export function Header({ categories }: { categories: Category[] }) {
   const router = useRouter();
+  const pathname = usePathname();
+  const isHome = pathname === "/";
   const topLevel = categories.filter((c) => !c.parent_id);
 
   function handleSearch(event: React.FormEvent<HTMLFormElement>) {
@@ -32,11 +35,28 @@ export function Header({ categories }: { categories: Category[] }) {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
-      <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3">
+    <header
+      className={cn(
+        "z-40 w-full",
+        isHome
+          ? "absolute inset-x-0 top-0 bg-gradient-to-b from-black/60 via-black/15 to-transparent"
+          : "sticky top-0 border-b border-border bg-background/95 backdrop-blur"
+      )}
+    >
+      <div
+        className={cn(
+          "mx-auto flex max-w-7xl items-center gap-4 px-4 py-3",
+          isHome && "text-white"
+        )}
+      >
         <Sheet>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Abrir menu">
+            <Button
+              variant="ghost"
+              size="icon"
+              className={cn("lg:hidden", isHome && "hover:bg-white/10")}
+              aria-label="Abrir menu"
+            >
               <Menu />
             </Button>
           </SheetTrigger>
@@ -64,7 +84,13 @@ export function Header({ categories }: { categories: Category[] }) {
           </SheetContent>
         </Sheet>
 
-        <Link href="/" className="font-display text-xl font-semibold tracking-tight text-accent">
+        <Link
+          href="/"
+          className={cn(
+            "font-display text-xl font-semibold tracking-tight",
+            isHome ? "text-white" : "text-accent"
+          )}
+        >
           {storeConfig.name}
         </Link>
 
@@ -73,7 +99,10 @@ export function Header({ categories }: { categories: Category[] }) {
             <Link
               key={category.id}
               href={`/categoria/${category.slug}`}
-              className="text-sm font-medium text-foreground/80 hover:text-accent"
+              className={cn(
+                "text-sm font-medium",
+                isHome ? "text-white/90 hover:text-white" : "text-foreground/80 hover:text-accent"
+              )}
             >
               {category.name}
             </Link>
@@ -83,17 +112,27 @@ export function Header({ categories }: { categories: Category[] }) {
         <form onSubmit={handleSearch} className="ml-auto hidden max-w-sm flex-1 items-center gap-2 md:flex">
           <div className="relative w-full">
             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input name="q" placeholder="Buscar produtos ou código" className="pl-9" />
+            <Input
+              name="q"
+              placeholder="Buscar produtos ou código"
+              className={cn("pl-9", isHome && "border-transparent bg-white/95 text-foreground")}
+            />
           </div>
         </form>
 
         <div className="ml-auto flex items-center gap-1 md:ml-0">
-          <Button asChild variant="ghost" size="icon" className="md:hidden" aria-label="Buscar">
+          <Button
+            asChild
+            variant="ghost"
+            size="icon"
+            className={cn("md:hidden", isHome && "hover:bg-white/10")}
+            aria-label="Buscar"
+          >
             <Link href="/produtos">
               <Search />
             </Link>
           </Button>
-          <CartSheet />
+          <CartSheet light={isHome} />
         </div>
       </div>
     </header>

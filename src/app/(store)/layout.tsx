@@ -11,7 +11,7 @@ export default async function StoreLayout({ children }: { children: React.ReactN
   const categories = await getCategories();
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="relative flex min-h-screen flex-col">
       <Header categories={categories} />
       <main className="flex-1">{children}</main>
       <Footer />

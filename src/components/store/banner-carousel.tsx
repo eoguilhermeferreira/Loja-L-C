@@ -54,16 +54,16 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
   );
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-border bg-muted">
+    <div className="relative w-full overflow-hidden bg-muted">
       {banner.button_link ? (
         <Link
           href={banner.button_link}
-          className="relative block aspect-[16/7] w-full sm:aspect-[21/7]"
+          className="relative block aspect-[3/4] w-full sm:aspect-[21/9]"
         >
           {bannerContent}
         </Link>
       ) : (
-        <div className="relative block aspect-[16/7] w-full sm:aspect-[21/7]">
+        <div className="relative block aspect-[3/4] w-full sm:aspect-[21/9]">
           {bannerContent}
         </div>
       )}

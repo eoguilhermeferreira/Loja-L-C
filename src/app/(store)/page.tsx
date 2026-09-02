@@ -41,53 +41,55 @@ export default async function HomePage() {
   const promoWide = banners.find((b) => b.placement === "promo_wide");
 
   return (
-    <div className="mx-auto flex max-w-7xl flex-col gap-14 px-4 py-6 sm:py-8">
+    <>
       <BannerCarousel banners={carouselBanners} />
 
-      <Reveal>
-        <CategoryGrid categories={categories} />
-      </Reveal>
-
-      <Reveal>
-        <CampaignVideo src={CAMPAIGN_VIDEO_URL} />
-      </Reveal>
-
-      <Reveal>
-        <ProductSection title="Mais vendidos" href="/produtos" products={maisVendidos} />
-      </Reveal>
-
-      {(promoLeft || promoRight) && (
-        <Reveal
-          className={
-            promoLeft && promoRight ? "grid gap-4 sm:grid-cols-2" : undefined
-          }
-        >
-          {promoLeft && <PromoBanner {...toPromoBannerProps(promoLeft)} />}
-          {promoRight && (
-            <PromoBanner {...toPromoBannerProps(promoRight)} imageSide="right" />
-          )}
-        </Reveal>
-      )}
-
-      <Reveal>
-        <ProductSection title="Novidades" href="/produtos" products={novidades} />
-      </Reveal>
-
-      {square && (
+      <div className="mx-auto flex max-w-7xl flex-col gap-14 px-4 py-6 sm:py-8">
         <Reveal>
-          <PromoSquareBanner {...toPromoBannerProps(square)} />
+          <CategoryGrid categories={categories} />
         </Reveal>
-      )}
 
-      <Reveal>
-        <ProductSection title="Ofertas" href="/produtos" products={ofertas} />
-      </Reveal>
-
-      {promoWide && (
         <Reveal>
-          <PromoBanner {...toPromoBannerProps(promoWide)} />
+          <CampaignVideo src={CAMPAIGN_VIDEO_URL} />
         </Reveal>
-      )}
-    </div>
+
+        <Reveal>
+          <ProductSection title="Mais vendidos" href="/produtos" products={maisVendidos} />
+        </Reveal>
+
+        {(promoLeft || promoRight) && (
+          <Reveal
+            className={
+              promoLeft && promoRight ? "grid gap-4 sm:grid-cols-2" : undefined
+            }
+          >
+            {promoLeft && <PromoBanner {...toPromoBannerProps(promoLeft)} />}
+            {promoRight && (
+              <PromoBanner {...toPromoBannerProps(promoRight)} imageSide="right" />
+            )}
+          </Reveal>
+        )}
+
+        <Reveal>
+          <ProductSection title="Novidades" href="/produtos" products={novidades} />
+        </Reveal>
+
+        {square && (
+          <Reveal>
+            <PromoSquareBanner {...toPromoBannerProps(square)} />
+          </Reveal>
+        )}
+
+        <Reveal>
+          <ProductSection title="Ofertas" href="/produtos" products={ofertas} />
+        </Reveal>
+
+        {promoWide && (
+          <Reveal>
+            <PromoBanner {...toPromoBannerProps(promoWide)} />
+          </Reveal>
+        )}
+      </div>
+    </>
   );
 }
