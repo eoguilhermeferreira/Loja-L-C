@@ -1,8 +1,12 @@
 import { BannerCarousel } from "@/components/store/banner-carousel";
+import { CampaignVideo } from "@/components/store/campaign-video";
 import { CategoryGrid } from "@/components/store/category-grid";
 import { PromoBanner, PromoSquareBanner } from "@/components/store/promo-banner";
 import { ProductSection } from "@/components/store/product-section";
 import { Reveal } from "@/components/store/reveal";
+
+const CAMPAIGN_VIDEO_URL =
+  "https://d2ol7oe51mr4n9.cloudfront.net/user_3DddW0JRUDw0aHbl43U3f1JTg8N/2ffa7644-3cef-4786-8ab5-b0d74526a7e4.mp4";
 import {
   getActiveBanners,
   getCategories,
@@ -70,6 +74,10 @@ export default async function HomePage() {
           <PromoSquareBanner {...toPromoBannerProps(square)} />
         </Reveal>
       )}
+
+      <Reveal>
+        <CampaignVideo src={CAMPAIGN_VIDEO_URL} />
+      </Reveal>
 
       <Reveal>
         <ProductSection title="Ofertas" href="/produtos" products={ofertas} />
