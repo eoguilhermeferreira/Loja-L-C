@@ -113,6 +113,7 @@ function VideoSlide({
 
 export function BannerCarousel({ banners }: { banners: Banner[] }) {
   const [index, setIndex] = React.useState(0);
+  const dragStart = React.useRef<{ x: number; y: number } | null>(null);
 
   // O(s) banner(s) de vídeo sempre vêm primeiro, na frente do carrossel
   // de imagens — independe da ordem de exibição configurada no admin.
@@ -126,6 +127,10 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
     setIndex((current) => (current + 1) % slides.length);
   }, [slides.length]);
 
+  const goBack = React.useCallback(() => {
+    setIndex((current) => (current - 1 + slides.length) % slides.length);
+  }, [slides.length]);
+
   React.useEffect(() => {
     if (slides.length < 2) return;
     if (slides[index]?.placement === "video") return;
@@ -133,6 +138,27 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
     const timer = setTimeout(advance, 6000);
     return () => clearTimeout(timer);
   }, [index, slides, advance]);
+
+  // Arrastar/deslizar pro lado também troca de slide, além da troca
+  // automática — só decide na soltura (sem preventDefault durante o
+  // gesto), pra não brigar com o scroll vertical da página nem com o
+  // tap-to-play do vídeo ou o clique nos links do slide.
+  function handleDragStart(e: React.PointerEvent) {
+    dragStart.current = { x: e.clientX, y: e.clientY };
+  }
+
+  function handleDragEnd(e: React.PointerEvent) {
+    const start = dragStart.current;
+    dragStart.current = null;
+    if (!start || slides.length < 2) return;
+
+    const deltaX = e.clientX - start.x;
+    const deltaY = e.clientY - start.y;
+    if (Math.abs(deltaX) < 40 || Math.abs(deltaX) < Math.abs(deltaY)) return;
+
+    if (deltaX < 0) advance();
+    else goBack();
+  }
 
   if (slides.length === 0) return null;
 
@@ -199,7 +225,12 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
   );
 
   return (
-    <div className="relative w-full overflow-hidden bg-muted">
+    <div
+      className="relative w-full touch-pan-y overflow-hidden bg-muted"
+      onPointerDown={handleDragStart}
+      onPointerUp={handleDragEnd}
+      onPointerCancel={() => (dragStart.current = null)}
+    >
       {!isVideo && banner.button_link ? (
         <Link
           href={banner.button_link}
