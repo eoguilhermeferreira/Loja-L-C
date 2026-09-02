@@ -7,7 +7,13 @@
 
 export type HomeSection = "mais_vendidos" | "novidades" | "ofertas";
 export type ProductGender = "masculino" | "feminino" | "unissex";
-export type BannerPlacement = "carousel" | "promo_left" | "promo_right" | "square" | "promo_wide";
+export type BannerPlacement =
+  | "carousel"
+  | "promo_left"
+  | "promo_right"
+  | "square"
+  | "promo_wide"
+  | "video";
 export type PaymentMethod = "pix" | "cartao_credito" | "cartao_debito" | "boleto";
 export type PaymentStatus = "pendente" | "pago" | "falhou" | "reembolsado";
 export type DeliveryStatus =
@@ -135,7 +141,8 @@ export interface Database {
           title: string | null;
           description: string | null;
           eyebrow: string | null;
-          image_url: string;
+          image_url: string | null;
+          video_url: string | null;
           button_label: string | null;
           button_link: string | null;
           placement: BannerPlacement;
@@ -143,9 +150,7 @@ export interface Database {
           display_order: number;
           created_at: string;
         };
-        Insert: Partial<Omit<Database["public"]["Tables"]["banners"]["Row"], "id" | "created_at">> & {
-          image_url: string;
-        };
+        Insert: Partial<Omit<Database["public"]["Tables"]["banners"]["Row"], "id" | "created_at">>;
         Update: Partial<Database["public"]["Tables"]["banners"]["Insert"]>;
         Relationships: [];
       };

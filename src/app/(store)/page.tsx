@@ -10,12 +10,9 @@ import {
 } from "@/lib/queries";
 import type { Banner } from "@/types/database.types";
 
-const CAMPAIGN_VIDEO_URL =
-  "https://d2ol7oe51mr4n9.cloudfront.net/user_3DddW0JRUDw0aHbl43U3f1JTg8N/2ffa7644-3cef-4786-8ab5-b0d74526a7e4.mp4";
-
 function toPromoBannerProps(banner: Banner) {
   return {
-    imageUrl: banner.image_url,
+    imageUrl: banner.image_url ?? "",
     eyebrow: banner.eyebrow ?? undefined,
     title: banner.title ?? "",
     description: banner.description ?? undefined,
@@ -33,7 +30,9 @@ export default async function HomePage() {
     getProductsByHomeSection("ofertas"),
   ]);
 
-  const carouselBanners = banners.filter((b) => b.placement === "carousel");
+  const carouselBanners = banners.filter(
+    (b) => b.placement === "carousel" || b.placement === "video"
+  );
   const promoLeft = banners.find((b) => b.placement === "promo_left");
   const promoRight = banners.find((b) => b.placement === "promo_right");
   const square = banners.find((b) => b.placement === "square");
@@ -41,7 +40,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <BannerCarousel banners={carouselBanners} videoSrc={CAMPAIGN_VIDEO_URL} />
+      <BannerCarousel banners={carouselBanners} />
 
       <div className="mx-auto flex max-w-7xl flex-col gap-14 px-4 py-6 sm:py-8">
         <Reveal>

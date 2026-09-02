@@ -46,19 +46,23 @@ const PLACEMENT_LABELS: Record<BannerPlacement, string> = {
   promo_right: "Promo — bloco direito",
   square: "Banner quadrado (grande)",
   promo_wide: "Banner largo (atendimento etc.)",
+  video: "Vídeo do carrossel (sempre o primeiro slide)",
 };
 
 export function BannerManager({ banners }: { banners: Banner[] }) {
   const [editing, setEditing] = React.useState<Banner | null>(null);
   const [open, setOpen] = React.useState(false);
   const [imageUrl, setImageUrl] = React.useState<string | null>(null);
+  const [videoUrl, setVideoUrl] = React.useState("");
   const [isActive, setIsActive] = React.useState(true);
   const [placement, setPlacement] = React.useState<BannerPlacement>("carousel");
   const [isPending, startTransition] = React.useTransition();
+  const isVideo = placement === "video";
 
   function openCreate() {
     setEditing(null);
     setImageUrl(null);
+    setVideoUrl("");
     setIsActive(true);
     setPlacement("carousel");
     setOpen(true);
@@ -67,13 +71,18 @@ export function BannerManager({ banners }: { banners: Banner[] }) {
   function openEdit(banner: Banner) {
     setEditing(banner);
     setImageUrl(banner.image_url);
+    setVideoUrl(banner.video_url ?? "");
     setIsActive(banner.is_active);
     setPlacement(banner.placement);
     setOpen(true);
   }
 
   async function handleSubmit(formData: FormData) {
-    if (!imageUrl) {
+    if (isVideo && !videoUrl.trim()) {
+      toast.error("Envie o link do vídeo");
+      return;
+    }
+    if (!isVideo && !imageUrl) {
       toast.error("Envie uma imagem para o banner");
       return;
     }
@@ -110,10 +119,22 @@ export function BannerManager({ banners }: { banners: Banner[] }) {
               <DialogTitle>{editing ? "Editar banner" : "Novo banner"}</DialogTitle>
             </DialogHeader>
             <form action={handleSubmit} className="space-y-4">
-              <div>
-                <Label className="mb-1.5 block">Imagem</Label>
-                <ImageUpload bucket="banners" value={imageUrl} onChange={setImageUrl} name="image_url" />
-              </div>
+              {isVideo ? (
+                <div>
+                  <Label className="mb-1.5 block">Link do vídeo (URL)</Label>
+                  <Input
+                    name="video_url"
+                    value={videoUrl}
+                    onChange={(e) => setVideoUrl(e.target.value)}
+                    placeholder="https://..."
+                  />
+                </div>
+              ) : (
+                <div>
+                  <Label className="mb-1.5 block">Imagem</Label>
+                  <ImageUpload bucket="banners" value={imageUrl} onChange={setImageUrl} name="image_url" />
+                </div>
+              )}
               <div>
                 <Label className="mb-1.5 block">Onde aparece</Label>
                 <Select value={placement} onValueChange={(v) => setPlacement(v as BannerPlacement)}>
@@ -179,7 +200,11 @@ export function BannerManager({ banners }: { banners: Banner[] }) {
         {banners.map((banner) => (
           <div key={banner.id} className="overflow-hidden rounded-lg border border-border bg-card">
             <div className="relative aspect-[16/7] bg-muted">
-              <Image src={banner.image_url} alt={banner.title ?? ""} fill className="object-cover" />
+              {banner.placement === "video" && banner.video_url ? (
+                <video src={banner.video_url} muted className="size-full object-cover" />
+              ) : banner.image_url ? (
+                <Image src={banner.image_url} alt={banner.title ?? ""} fill className="object-cover" />
+              ) : null}
             </div>
             <div className="space-y-2 p-4">
               <div className="flex items-center justify-between gap-2">

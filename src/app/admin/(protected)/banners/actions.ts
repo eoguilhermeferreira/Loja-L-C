@@ -5,19 +5,36 @@ import { z } from "zod";
 
 import { createClient } from "@/lib/supabase/server";
 
-const PLACEMENTS = ["carousel", "promo_left", "promo_right", "square", "promo_wide"] as const;
+const PLACEMENTS = [
+  "carousel",
+  "promo_left",
+  "promo_right",
+  "square",
+  "promo_wide",
+  "video",
+] as const;
 
-const bannerSchema = z.object({
-  title: z.string().trim().nullable(),
-  description: z.string().trim().nullable(),
-  eyebrow: z.string().trim().nullable(),
-  image_url: z.string().trim().min(1, "Envie uma imagem"),
-  button_label: z.string().trim().nullable(),
-  button_link: z.string().trim().nullable(),
-  placement: z.enum(PLACEMENTS),
-  is_active: z.boolean(),
-  display_order: z.number().int().default(0),
-});
+const bannerSchema = z
+  .object({
+    title: z.string().trim().nullable(),
+    description: z.string().trim().nullable(),
+    eyebrow: z.string().trim().nullable(),
+    image_url: z.string().trim().nullable(),
+    video_url: z.string().trim().nullable(),
+    button_label: z.string().trim().nullable(),
+    button_link: z.string().trim().nullable(),
+    placement: z.enum(PLACEMENTS),
+    is_active: z.boolean(),
+    display_order: z.number().int().default(0),
+  })
+  .refine((data) => data.placement !== "video" || !!data.video_url, {
+    message: "Envie o link do vídeo",
+    path: ["video_url"],
+  })
+  .refine((data) => data.placement === "video" || !!data.image_url, {
+    message: "Envie uma imagem",
+    path: ["image_url"],
+  });
 
 function optional(value: FormDataEntryValue | null) {
   return value ? String(value) : null;
@@ -28,7 +45,8 @@ function parseFormData(formData: FormData) {
     title: optional(formData.get("title")),
     description: optional(formData.get("description")),
     eyebrow: optional(formData.get("eyebrow")),
-    image_url: formData.get("image_url"),
+    image_url: optional(formData.get("image_url")),
+    video_url: optional(formData.get("video_url")),
     button_label: optional(formData.get("button_label")),
     button_link: optional(formData.get("button_link")),
     placement: formData.get("placement") || "carousel",
