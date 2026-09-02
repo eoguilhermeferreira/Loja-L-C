@@ -117,19 +117,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-/*
- * iOS desenha um botão de play gigante por cima de vídeo mudo/autoplay
- * quando o Modo de Baixa Energia (ou "Reduzir Movimento") impede o
- * autoplay — é a UI nativa do Safari, não algo que o app controla via
- * atributo. Escondendo o pseudo-elemento, o vídeo parado fica só com o
- * primeiro quadro visível, parecendo uma foto normal em vez de quebrado.
- */
-.hero-video::-webkit-media-controls-start-playback-button {
-  display: none !important;
-  -webkit-appearance: none;
-  pointer-events: none;
-}
-.hero-video::-webkit-media-controls {
-  display: none !important;
-}

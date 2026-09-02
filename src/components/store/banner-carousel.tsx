@@ -17,14 +17,23 @@ import type { Banner } from "@/types/database.types";
  * o carrossel pra avançar.
  *
  * Importante: iOS bloqueia autoplay de qualquer vídeo (mesmo mudo) com
- * o Modo de Baixa Energia ou "Reduzir Movimento" ativados — é uma
- * política do sistema, nenhum código de site consegue driblar isso, o
- * usuário precisa tocar no vídeo pra iniciar nesse caso. Por isso o
- * vídeo NUNCA fica dentro do Link do slide (o toque nativo do Safari
- * pra iniciar o vídeo engolia o clique antes de chegar no botão) — só o
- * botão "Ver coleção" é um link de verdade, sempre clicável.
+ * o Modo de Baixa Energia ou "Reduzir Movimento" ativados, e nesse caso
+ * desenha um ícone de play grande por cima do vídeo — UI nativa do
+ * WebKit que o CSS da página não consegue esconder de forma confiável
+ * (varia entre versões do iOS). Por isso o vídeo fica com opacidade 0
+ * até o evento onPlaying confirmar que ele está realmente tocando; até
+ * lá, e enquanto não tocar, mostra uma capa de marca por cima — a
+ * opacidade 0 esconde a caixa inteira do vídeo, ícone nativo incluso,
+ * então nunca aparece um botão de play. O toque continua chegando no
+ * vídeo (a capa tem pointer-events-none), então dá pra iniciar
+ * manualmente mesmo invisível. O vídeo NUNCA fica dentro do Link do
+ * slide (o toque nativo do Safari pra iniciar o vídeo engolia o clique
+ * antes de chegar no botão) — só o botão "Ver coleção" é um link de
+ * verdade, sempre clicável.
  */
 function VideoSlide({ src, onEnded }: { src: string; onEnded: () => void }) {
+  const [started, setStarted] = React.useState(false);
+
   function setVideoRef(node: HTMLVideoElement | null) {
     if (!node) return;
 
@@ -59,16 +68,33 @@ function VideoSlide({ src, onEnded }: { src: string; onEnded: () => void }) {
   }
 
   return (
-    <video
-      ref={setVideoRef}
-      src={src}
-      autoPlay
-      muted
-      playsInline
-      preload="auto"
-      onEnded={onEnded}
-      className="hero-video absolute inset-0 size-full object-cover"
-    />
+    <>
+      <video
+        ref={setVideoRef}
+        src={src}
+        autoPlay
+        muted
+        playsInline
+        preload="auto"
+        onEnded={onEnded}
+        onPlaying={() => setStarted(true)}
+        className={cn(
+          "absolute inset-0 size-full object-cover transition-opacity duration-500",
+          started ? "opacity-100" : "opacity-0"
+        )}
+      />
+      <div
+        aria-hidden
+        className={cn(
+          "absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary via-primary to-accent/30 pointer-events-none transition-opacity duration-500",
+          started ? "opacity-0" : "opacity-100"
+        )}
+      >
+        <span className="font-display text-2xl font-semibold tracking-[0.2em] text-accent sm:text-4xl">
+          L&amp;C IMPORTS
+        </span>
+      </div>
+    </>
   );
 }
 
