@@ -1,13 +1,13 @@
 export function CampaignVideo({ src }: { src: string }) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-border bg-muted">
+    <div className="flex justify-center">
       <video
         src={src}
         autoPlay
         loop
         muted
         playsInline
-        className="mx-auto h-auto max-h-[70vh] w-full"
+        className="max-h-[70vh] w-auto max-w-full rounded-2xl"
       />
     </div>
   );
