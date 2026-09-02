@@ -133,7 +133,7 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
 
   return (
     <div className="relative w-full overflow-hidden bg-muted">
-      {!isVideo && banner.button_link ? (
+      {banner.button_link ? (
         <Link
           href={banner.button_link}
           className="relative block aspect-[4/5] w-full sm:aspect-[21/9]"
