@@ -67,7 +67,7 @@ function VideoSlide({ src, onEnded }: { src: string; onEnded: () => void }) {
       playsInline
       preload="auto"
       onEnded={onEnded}
-      className="absolute inset-0 size-full object-cover"
+      className="hero-video absolute inset-0 size-full object-cover"
     />
   );
 }
