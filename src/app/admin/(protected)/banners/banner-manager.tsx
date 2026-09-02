@@ -120,15 +120,23 @@ export function BannerManager({ banners }: { banners: Banner[] }) {
             </DialogHeader>
             <form action={handleSubmit} className="space-y-4">
               {isVideo ? (
-                <div>
-                  <Label className="mb-1.5 block">Link do vídeo (URL)</Label>
-                  <Input
-                    name="video_url"
-                    value={videoUrl}
-                    onChange={(e) => setVideoUrl(e.target.value)}
-                    placeholder="https://..."
-                  />
-                </div>
+                <>
+                  <div>
+                    <Label className="mb-1.5 block">Link do vídeo (URL)</Label>
+                    <Input
+                      name="video_url"
+                      value={videoUrl}
+                      onChange={(e) => setVideoUrl(e.target.value)}
+                      placeholder="https://..."
+                    />
+                  </div>
+                  <div>
+                    <Label className="mb-1.5 block">
+                      Capa (opcional — mostrada enquanto o vídeo não toca)
+                    </Label>
+                    <ImageUpload bucket="banners" value={imageUrl} onChange={setImageUrl} name="image_url" />
+                  </div>
+                </>
               ) : (
                 <div>
                   <Label className="mb-1.5 block">Imagem</Label>
@@ -201,7 +209,12 @@ export function BannerManager({ banners }: { banners: Banner[] }) {
           <div key={banner.id} className="overflow-hidden rounded-lg border border-border bg-card">
             <div className="relative aspect-[16/7] bg-muted">
               {banner.placement === "video" && banner.video_url ? (
-                <video src={banner.video_url} muted className="size-full object-cover" />
+                <video
+                  src={banner.video_url}
+                  poster={banner.image_url ?? undefined}
+                  muted
+                  className="size-full object-cover"
+                />
               ) : banner.image_url ? (
                 <Image src={banner.image_url} alt={banner.title ?? ""} fill className="object-cover" />
               ) : null}

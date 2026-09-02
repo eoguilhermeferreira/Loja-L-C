@@ -22,16 +22,25 @@ import type { Banner } from "@/types/database.types";
  * WebKit que o CSS da página não consegue esconder de forma confiável
  * (varia entre versões do iOS). Por isso o vídeo fica com opacidade 0
  * até o evento onPlaying confirmar que ele está realmente tocando; até
- * lá, e enquanto não tocar, mostra uma capa de marca por cima — a
- * opacidade 0 esconde a caixa inteira do vídeo, ícone nativo incluso,
- * então nunca aparece um botão de play. O toque continua chegando no
- * vídeo (a capa tem pointer-events-none), então dá pra iniciar
- * manualmente mesmo invisível. O vídeo NUNCA fica dentro do Link do
- * slide (o toque nativo do Safari pra iniciar o vídeo engolia o clique
- * antes de chegar no botão) — só o botão "Ver coleção" é um link de
- * verdade, sempre clicável.
+ * lá, e enquanto não tocar, mostra a capa (primeiro quadro do vídeo)
+ * por cima — a opacidade 0 esconde a caixa inteira do vídeo, ícone
+ * nativo incluso, então nunca aparece um botão de play; o que aparece é
+ * só uma foto parada. O toque continua chegando no vídeo (a capa tem
+ * pointer-events-none), então dá pra iniciar manualmente mesmo
+ * invisível. O vídeo NUNCA fica dentro do Link do slide (o toque nativo
+ * do Safari pra iniciar o vídeo engolia o clique antes de chegar no
+ * botão) — só o botão "Ver coleção" é um link de verdade, sempre
+ * clicável.
  */
-function VideoSlide({ src, onEnded }: { src: string; onEnded: () => void }) {
+function VideoSlide({
+  src,
+  poster,
+  onEnded,
+}: {
+  src: string;
+  poster: string | null;
+  onEnded: () => void;
+}) {
   const [started, setStarted] = React.useState(false);
 
   function setVideoRef(node: HTMLVideoElement | null) {
@@ -72,6 +81,7 @@ function VideoSlide({ src, onEnded }: { src: string; onEnded: () => void }) {
       <video
         ref={setVideoRef}
         src={src}
+        poster={poster ?? undefined}
         autoPlay
         muted
         playsInline
@@ -83,17 +93,20 @@ function VideoSlide({ src, onEnded }: { src: string; onEnded: () => void }) {
           started ? "opacity-100" : "opacity-0"
         )}
       />
-      <div
-        aria-hidden
-        className={cn(
-          "absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary via-primary to-accent/30 pointer-events-none transition-opacity duration-500",
-          started ? "opacity-0" : "opacity-100"
-        )}
-      >
-        <span className="font-display text-2xl font-semibold tracking-[0.2em] text-accent sm:text-4xl">
-          L&amp;C IMPORTS
-        </span>
-      </div>
+      {poster && (
+        <Image
+          src={poster}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          aria-hidden
+          className={cn(
+            "object-cover pointer-events-none transition-opacity duration-500",
+            started ? "opacity-0" : "opacity-100"
+          )}
+        />
+      )}
     </>
   );
 }
@@ -128,7 +141,7 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
 
   const media =
     isVideo && banner.video_url ? (
-      <VideoSlide src={banner.video_url} onEnded={advance} />
+      <VideoSlide src={banner.video_url} poster={banner.image_url} onEnded={advance} />
     ) : banner.image_url ? (
       <Image
         src={banner.image_url}
