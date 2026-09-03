@@ -13,7 +13,10 @@ export function Footer() {
     <footer className="mt-16 bg-black text-white">
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <Image src="/logo.png" alt={storeConfig.name} width={48} height={48} className="size-12 rounded-full" />
+          <div className="flex items-center gap-3">
+            <Image src="/logo.png" alt="" width={64} height={64} className="size-16 rounded-full" />
+            <span className="font-display text-lg font-semibold text-accent">{storeConfig.name}</span>
+          </div>
           <p className="mt-2 text-sm text-white/60">{storeConfig.description}</p>
         </div>
 

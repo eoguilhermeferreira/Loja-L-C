@@ -32,9 +32,9 @@ export function AdminSidebar() {
   return (
     <aside className="flex h-screen w-60 shrink-0 flex-col border-r border-border bg-card">
       <div className="flex items-center gap-2.5 border-b border-border p-4">
-        <Image src="/logo.png" alt={storeConfig.name} width={36} height={36} className="size-9 shrink-0 rounded-full" />
+        <Image src="/logo.png" alt="" width={48} height={48} className="size-12 shrink-0 rounded-full" />
         <div>
-          <span className="font-display text-sm font-semibold text-accent">{storeConfig.name}</span>
+          <span className="font-display text-base font-semibold text-accent">{storeConfig.name}</span>
           <p className="text-xs text-muted-foreground">Painel administrativo</p>
         </div>
       </div>

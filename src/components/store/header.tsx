@@ -69,9 +69,9 @@ export function Header({ categories }: { categories: Category[] }) {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="flex flex-col gap-6">
-            <SheetHeader>
-              <Image src="/logo.png" alt={storeConfig.name} width={44} height={44} className="size-11 rounded-full" />
-              <SheetTitle className="sr-only">{storeConfig.name}</SheetTitle>
+            <SheetHeader className="flex-row items-center gap-3">
+              <Image src="/logo.png" alt="" width={56} height={56} className="size-14 rounded-full" />
+              <SheetTitle className="font-display text-lg text-accent">{storeConfig.name}</SheetTitle>
             </SheetHeader>
             <nav className="flex flex-col gap-1">
               <SheetClose asChild>
@@ -98,15 +98,23 @@ export function Header({ categories }: { categories: Category[] }) {
           </SheetContent>
         </Sheet>
 
-        <Link href="/" aria-label={storeConfig.name}>
+        <Link href="/" className="flex items-center gap-2">
           <Image
             src="/logo.png"
-            alt={storeConfig.name}
-            width={44}
-            height={44}
+            alt=""
+            width={56}
+            height={56}
             priority
-            className="size-9 rounded-full sm:size-11"
+            className="size-11 rounded-full sm:size-14"
           />
+          <span
+            className={cn(
+              "font-display text-lg font-semibold tracking-tight sm:text-xl",
+              isHome ? "text-white" : "text-accent"
+            )}
+          >
+            {storeConfig.name}
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-5 lg:flex">
