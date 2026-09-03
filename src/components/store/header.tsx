@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import * as React from "react";
@@ -96,14 +97,15 @@ export function Header({ categories }: { categories: Category[] }) {
           </SheetContent>
         </Sheet>
 
-        <Link
-          href="/"
-          className={cn(
-            "font-display text-xl font-semibold tracking-tight",
-            isHome ? "text-white" : "text-accent"
-          )}
-        >
-          {storeConfig.name}
+        <Link href="/" aria-label={storeConfig.name}>
+          <Image
+            src="/logo.png"
+            alt={storeConfig.name}
+            width={44}
+            height={44}
+            priority
+            className="size-9 rounded-full sm:size-11"
+          />
         </Link>
 
         <nav className="hidden items-center gap-5 lg:flex">
