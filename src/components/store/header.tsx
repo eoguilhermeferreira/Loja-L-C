@@ -54,7 +54,8 @@ export function Header({ categories }: { categories: Category[] }) {
       <div
         className={cn(
           "mx-auto flex max-w-7xl items-center gap-4 px-4 py-3",
-          isHome && "text-white"
+          isHome && "text-white",
+          mobileSearchOpen && "hidden md:flex"
         )}
       >
         <Sheet>
@@ -134,9 +135,17 @@ export function Header({ categories }: { categories: Category[] }) {
 
         <form onSubmit={handleSearch} className="ml-auto hidden max-w-sm flex-1 items-center gap-2 md:flex">
           <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <button
+              type="submit"
+              aria-label="Buscar"
+              className="absolute left-0 top-0 flex h-full w-9 items-center justify-center text-muted-foreground"
+            >
+              <Search className="size-4" />
+            </button>
             <Input
               name="q"
+              type="search"
+              enterKeyHint="search"
               placeholder="Buscar produtos ou código"
               className={cn("pl-9", isHome && "border-transparent bg-white/95 text-foreground")}
             />
@@ -159,31 +168,34 @@ export function Header({ categories }: { categories: Category[] }) {
       </div>
 
       {mobileSearchOpen && (
-        <div
-          className={cn(
-            "border-t px-4 py-2 md:hidden",
-            isHome ? "border-white/10 bg-black/70 backdrop-blur" : "border-border bg-background"
-          )}
-        >
-          <form onSubmit={handleSearch} className="flex items-center gap-2">
-            <Search className="size-4 shrink-0 text-muted-foreground" />
+        <div className="mx-auto flex max-w-7xl items-center gap-2 px-4 py-3 md:hidden">
+          <form onSubmit={handleSearch} className="flex flex-1 items-center gap-2">
+            <button
+              type="submit"
+              aria-label="Buscar"
+              className={cn("shrink-0", isHome ? "text-white" : "text-muted-foreground")}
+            >
+              <Search className="size-5" />
+            </button>
             <Input
               ref={mobileSearchRef}
               name="q"
+              type="search"
+              enterKeyHint="search"
               placeholder="Buscar produtos ou código"
               className={cn("flex-1", isHome && "border-transparent bg-white/95 text-foreground")}
             />
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              aria-label="Fechar busca"
-              onClick={() => setMobileSearchOpen(false)}
-              className={cn(isHome && "text-white hover:bg-white/10")}
-            >
-              <X />
-            </Button>
           </form>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label="Fechar busca"
+            onClick={() => setMobileSearchOpen(false)}
+            className={cn(isHome && "text-white hover:bg-white/10")}
+          >
+            <X />
+          </Button>
         </div>
       )}
     </header>
