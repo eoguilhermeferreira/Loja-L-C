@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Mail, MapPin } from "lucide-react";
 
@@ -12,7 +13,7 @@ export function Footer() {
     <footer className="mt-16 bg-black text-white">
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <h2 className="font-display text-lg font-semibold text-accent">{storeConfig.name}</h2>
+          <Image src="/logo.png" alt={storeConfig.name} width={48} height={48} className="size-12 rounded-full" />
           <p className="mt-2 text-sm text-white/60">{storeConfig.description}</p>
         </div>
 

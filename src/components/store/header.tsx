@@ -70,7 +70,8 @@ export function Header({ categories }: { categories: Category[] }) {
           </SheetTrigger>
           <SheetContent side="left" className="flex flex-col gap-6">
             <SheetHeader>
-              <SheetTitle className="font-display text-xl text-accent">{storeConfig.name}</SheetTitle>
+              <Image src="/logo.png" alt={storeConfig.name} width={44} height={44} className="size-11 rounded-full" />
+              <SheetTitle className="sr-only">{storeConfig.name}</SheetTitle>
             </SheetHeader>
             <nav className="flex flex-col gap-1">
               <SheetClose asChild>
