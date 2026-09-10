@@ -8,6 +8,16 @@ import { TikTokIcon } from "@/components/icons/tiktok-icon";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
 import { storeConfig } from "@/config/store";
 
+const PAYMENT_METHODS = [
+  { src: "/payment-icons/pix.svg", label: "Pix" },
+  { src: "/payment-icons/visa.svg", label: "Visa" },
+  { src: "/payment-icons/mastercard.svg", label: "Mastercard" },
+  { src: "/payment-icons/elo.svg", label: "Elo" },
+  { src: "/payment-icons/hipercard.svg", label: "Hipercard" },
+  { src: "/payment-icons/amex.svg", label: "American Express" },
+  { src: "/payment-icons/boleto.svg", label: "Boleto" },
+];
+
 export function Footer() {
   return (
     <footer className="mt-16 bg-black text-white">
@@ -79,6 +89,16 @@ export function Footer() {
               <FacebookIcon className="size-4" /> Facebook
             </a>
           </div>
+        </div>
+      </div>
+
+      <div className="border-t border-white/10 py-6 text-center">
+        <h3 className="text-sm font-semibold">Formas de pagamento</h3>
+        <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+          {PAYMENT_METHODS.map((method) => (
+            // eslint-disable-next-line @next/next/no-img-element -- SVG local, sem otimização do next/image
+            <img key={method.label} src={method.src} alt={method.label} className="h-8 w-auto" />
+          ))}
         </div>
       </div>
 
