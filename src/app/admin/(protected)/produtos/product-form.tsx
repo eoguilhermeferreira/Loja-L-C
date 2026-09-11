@@ -50,7 +50,7 @@ export function ProductForm({
   const [price, setPrice] = React.useState(product?.price?.toString() ?? "");
   const [promoPrice, setPromoPrice] = React.useState(product?.promo_price?.toString() ?? "");
   const [stock, setStock] = React.useState(product?.stock?.toString() ?? "0");
-  const [weight, setWeight] = React.useState(product?.weight_grams?.toString() ?? "200");
+  const weight = product?.weight_grams?.toString() ?? "200";
   const [isActive, setIsActive] = React.useState(product?.is_active ?? true);
   const [homeSection, setHomeSection] = React.useState<HomeSectionOption>(
     product?.home_section ?? "__none__"
@@ -196,10 +196,6 @@ export function ProductForm({
           <div>
             <Label className="mb-1.5 block">Estoque (sem variação)</Label>
             <Input type="number" min="0" value={stock} onChange={(e) => setStock(e.target.value)} />
-          </div>
-          <div>
-            <Label className="mb-1.5 block">Peso (gramas)</Label>
-            <Input type="number" min="1" value={weight} onChange={(e) => setWeight(e.target.value)} />
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-6">
