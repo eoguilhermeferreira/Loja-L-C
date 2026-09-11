@@ -22,6 +22,9 @@ export const storeConfig = {
     state: "SP",
   },
 
+  /** Nome de quem responde legalmente pela loja — usado no rodapé. */
+  legalResponsible: "Ceidy Ferrira",
+
   /**
    * Frete simplificado: valor fixo, sem gratuidade por faixa de valor —
    * a loja de referência usava a API do Melhor Envio; aqui optamos por um
