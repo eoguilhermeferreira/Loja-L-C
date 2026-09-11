@@ -113,6 +113,25 @@ export function Footer() {
         </p>
         <p>{storeConfig.legalResponsible}</p>
       </div>
+
+      <div className="border-t border-white/10 py-5 text-center">
+        <p className="mb-3 text-xs text-white/40">Desenvolvido por</p>
+        <a
+          href="https://instagram.com/agencynodex"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Agência NODEX"
+          className="inline-block opacity-70 transition-opacity hover:opacity-100"
+        >
+          <Image
+            src="/nodex-logo-white.png"
+            alt="Agência NODEX"
+            width={192}
+            height={64}
+            className="h-16 w-auto"
+          />
+        </a>
+      </div>
     </footer>
   );
 }
