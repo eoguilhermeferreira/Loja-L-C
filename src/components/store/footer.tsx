@@ -102,7 +102,7 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="space-y-1 border-t border-white/10 py-4 text-center text-xs text-white/50">
+      <div className="space-y-1 py-4 text-center text-xs text-white/50">
         <p>© {new Date().getFullYear()}, {storeConfig.name}</p>
         <p>
           É vedada qualquer reprodução total ou parcial, nos termos da Lei nº 9.610/98. Todos os
