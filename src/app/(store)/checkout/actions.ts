@@ -7,6 +7,7 @@ import { getPaymentClient, mapMercadoPagoStatus } from "@/lib/mercadopago";
 import { calculateShipping } from "@/lib/shipping";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { onlyDigits } from "@/lib/format";
+import { getVariationModel } from "@/lib/variations";
 import { storeConfig } from "@/config/store";
 import { z } from "zod";
 import type { PaymentStatus } from "@/types/database.types";
@@ -113,14 +114,21 @@ export async function createOrder(input: unknown): Promise<CreateOrderResult> {
 
     let stock = product.stock;
     let variationLabel: string | null = null;
+    let variationValue: string | null = null;
 
-    if (item.variationValue) {
-      const variation = product.product_variations.find(
-        (v) => v.value === item.variationValue
-      );
+    if (item.variationId) {
+      const variation = product.product_variations.find((v) => v.id === item.variationId);
       if (!variation) return { error: `Variação indisponível para ${product.name}.` };
       stock = variation.stock;
-      variationLabel = variation.label;
+
+      const model = getVariationModel(product.product_variations);
+      if (model.mode === "combo") {
+        variationLabel = "Tamanho / Cor";
+        variationValue = variation.value ? `${variation.label} / ${variation.value}` : variation.label;
+      } else {
+        variationLabel = variation.label;
+        variationValue = variation.value || variation.label;
+      }
     }
 
     if (item.quantity > stock) {
@@ -136,7 +144,7 @@ export async function createOrder(input: unknown): Promise<CreateOrderResult> {
       unit_price: unitPrice,
       quantity: item.quantity,
       variation_label: variationLabel,
-      variation_value: item.variationValue ?? null,
+      variation_value: variationValue,
     });
   }
 

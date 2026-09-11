@@ -58,7 +58,7 @@ export function CartSheet({ light = false }: { light?: boolean }) {
             <div className="flex-1 space-y-4 overflow-y-auto py-2">
               {items.map((item) => (
                 <div
-                  key={`${item.productId}-${item.variationValue ?? ""}`}
+                  key={`${item.productId}-${item.variationId ?? ""}`}
                   className="flex gap-3 border-b border-border pb-4"
                 >
                   <div className="relative size-16 shrink-0 overflow-hidden rounded-md bg-muted">
@@ -82,7 +82,7 @@ export function CartSheet({ light = false }: { light?: boolean }) {
                           variant="outline"
                           className="size-7"
                           onClick={() =>
-                            setQuantity(item.productId, item.quantity - 1, item.variationValue)
+                            setQuantity(item.productId, item.quantity - 1, item.variationId)
                           }
                         >
                           <Minus className="size-3" />
@@ -94,7 +94,7 @@ export function CartSheet({ light = false }: { light?: boolean }) {
                           className="size-7"
                           disabled={item.quantity >= item.maxStock}
                           onClick={() =>
-                            setQuantity(item.productId, item.quantity + 1, item.variationValue)
+                            setQuantity(item.productId, item.quantity + 1, item.variationId)
                           }
                         >
                           <Plus className="size-3" />
@@ -106,7 +106,7 @@ export function CartSheet({ light = false }: { light?: boolean }) {
                     </div>
                   </div>
                   <button
-                    onClick={() => removeItem(item.productId, item.variationValue)}
+                    onClick={() => removeItem(item.productId, item.variationId)}
                     className="self-start text-muted-foreground hover:text-destructive"
                     aria-label="Remover item"
                   >

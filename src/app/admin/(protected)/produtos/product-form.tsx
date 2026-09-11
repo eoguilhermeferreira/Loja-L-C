@@ -120,8 +120,8 @@ export function ProductForm({
       home_section: homeSection === "__none__" ? null : homeSection,
       images: images.map((url) => ({ url })),
       variations: variations
-        .filter((v) => v.value.trim())
-        .map((v) => ({ label: v.label.trim() || "Opção", value: v.value.trim(), stock: v.stock })),
+        .filter((v) => v.label.trim() || v.value.trim())
+        .map((v) => ({ label: v.label.trim() || "-", value: v.value.trim(), stock: v.stock })),
     });
     setIsSaving(false);
 
@@ -273,15 +273,21 @@ export function ProductForm({
           </p>
         ) : (
           <div className="space-y-2">
+            <p className="text-xs text-muted-foreground">
+              Repita o mesmo texto no 1º campo em todas as linhas (ex: &quot;Tamanho&quot;) pra
+              uma variação simples, só de tamanho ou só de cor. Ou coloque um tamanho diferente em
+              cada linha (G, GG...) com a cor correspondente no 2º campo, pra controlar tamanho e
+              cor juntos, cada combinação com seu próprio estoque.
+            </p>
             {variations.map((variation, index) => (
               <div key={index} className="grid grid-cols-[1fr_1fr_100px_40px] gap-2">
                 <Input
-                  placeholder="Rótulo (ex: Tamanho)"
+                  placeholder="Tamanho (ex: G)"
                   value={variation.label}
                   onChange={(e) => updateVariation(index, { label: e.target.value })}
                 />
                 <Input
-                  placeholder="Valor (ex: M)"
+                  placeholder="Cor (ex: Azul)"
                   value={variation.value}
                   onChange={(e) => updateVariation(index, { value: e.target.value })}
                 />

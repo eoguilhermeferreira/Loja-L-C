@@ -38,7 +38,7 @@ export default function CarrinhoPage() {
         <div className="space-y-4 lg:col-span-2">
           {items.map((item) => (
             <Card
-              key={`${item.productId}-${item.variationValue ?? ""}`}
+              key={`${item.productId}-${item.variationId ?? ""}`}
               className="flex gap-4 p-4"
             >
               <div className="relative size-24 shrink-0 overflow-hidden rounded-md bg-muted">
@@ -52,7 +52,7 @@ export default function CarrinhoPage() {
                     {item.name}
                   </Link>
                   <button
-                    onClick={() => removeItem(item.productId, item.variationValue)}
+                    onClick={() => removeItem(item.productId, item.variationId)}
                     className="text-muted-foreground hover:text-destructive"
                     aria-label="Remover item"
                   >
@@ -71,7 +71,7 @@ export default function CarrinhoPage() {
                       size="icon"
                       className="size-8"
                       onClick={() =>
-                        setQuantity(item.productId, item.quantity - 1, item.variationValue)
+                        setQuantity(item.productId, item.quantity - 1, item.variationId)
                       }
                     >
                       <Minus className="size-3.5" />
@@ -83,7 +83,7 @@ export default function CarrinhoPage() {
                       className="size-8"
                       disabled={item.quantity >= item.maxStock}
                       onClick={() =>
-                        setQuantity(item.productId, item.quantity + 1, item.variationValue)
+                        setQuantity(item.productId, item.quantity + 1, item.variationId)
                       }
                     >
                       <Plus className="size-3.5" />

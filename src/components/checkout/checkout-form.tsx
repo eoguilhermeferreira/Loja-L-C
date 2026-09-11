@@ -114,7 +114,7 @@ export function CheckoutForm() {
       items: items.map((item) => ({
         productId: item.productId,
         quantity: item.quantity,
-        variationValue: item.variationValue,
+        variationId: item.variationId,
       })),
     });
     setIsSubmitting(false);
@@ -335,7 +335,7 @@ export function CheckoutForm() {
         <h2 className="font-display text-lg font-semibold">Resumo do pedido</h2>
         <ul className="space-y-2 text-sm">
           {items.map((item) => (
-            <li key={`${item.productId}-${item.variationValue ?? ""}`} className="flex justify-between gap-2">
+            <li key={`${item.productId}-${item.variationId ?? ""}`} className="flex justify-between gap-2">
               <span className="text-muted-foreground">
                 {item.quantity}x {item.name}
                 {item.variationValue ? ` (${item.variationValue})` : ""}

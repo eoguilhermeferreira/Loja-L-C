@@ -10,6 +10,7 @@ export interface CartItem {
   unitPrice: number;
   quantity: number;
   weightGrams: number;
+  variationId?: string;
   variationLabel?: string;
   variationValue?: string;
   maxStock: number;
@@ -18,8 +19,8 @@ export interface CartItem {
 interface CartContextValue {
   items: CartItem[];
   addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
-  removeItem: (productId: string, variationValue?: string) => void;
-  setQuantity: (productId: string, quantity: number, variationValue?: string) => void;
+  removeItem: (productId: string, variationId?: string) => void;
+  setQuantity: (productId: string, quantity: number, variationId?: string) => void;
   clear: () => void;
   subtotal: number;
   totalWeightGrams: number;
@@ -31,8 +32,10 @@ const CartContext = React.createContext<CartContextValue | null>(null);
 
 const STORAGE_KEY = "lc-imports:cart";
 
-function cartKey(productId: string, variationValue?: string) {
-  return `${productId}::${variationValue ?? ""}`;
+// A chave usa o id da variação (não o texto da cor/tamanho), já que uma
+// combinação de tamanho+cor pode repetir a mesma cor em linhas diferentes.
+function cartKey(productId: string, variationId?: string) {
+  return `${productId}::${variationId ?? ""}`;
 }
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
@@ -64,15 +67,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const addItem = React.useCallback<CartContextValue["addItem"]>((item, quantity = 1) => {
     setItems((current) => {
-      const key = cartKey(item.productId, item.variationValue);
+      const key = cartKey(item.productId, item.variationId);
       const existing = current.find(
-        (i) => cartKey(i.productId, i.variationValue) === key
+        (i) => cartKey(i.productId, i.variationId) === key
       );
 
       if (existing) {
         const nextQuantity = Math.min(existing.quantity + quantity, existing.maxStock);
         return current.map((i) =>
-          cartKey(i.productId, i.variationValue) === key
+          cartKey(i.productId, i.variationId) === key
             ? { ...i, quantity: nextQuantity }
             : i
         );
@@ -83,10 +86,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const removeItem = React.useCallback<CartContextValue["removeItem"]>(
-    (productId, variationValue) => {
+    (productId, variationId) => {
       setItems((current) =>
         current.filter(
-          (i) => cartKey(i.productId, i.variationValue) !== cartKey(productId, variationValue)
+          (i) => cartKey(i.productId, i.variationId) !== cartKey(productId, variationId)
         )
       );
     },
@@ -94,11 +97,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   );
 
   const setQuantity = React.useCallback<CartContextValue["setQuantity"]>(
-    (productId, quantity, variationValue) => {
+    (productId, quantity, variationId) => {
       setItems((current) =>
         current
           .map((i) =>
-            cartKey(i.productId, i.variationValue) === cartKey(productId, variationValue)
+            cartKey(i.productId, i.variationId) === cartKey(productId, variationId)
               ? { ...i, quantity: Math.max(0, Math.min(quantity, i.maxStock)) }
               : i
           )

@@ -22,7 +22,7 @@ const productFormSchema = z.object({
   variations: z.array(
     z.object({
       label: z.string().trim().min(1),
-      value: z.string().trim().min(1),
+      value: z.string().trim(),
       stock: z.number().int().nonnegative(),
     })
   ),

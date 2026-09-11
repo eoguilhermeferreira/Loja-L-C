@@ -34,7 +34,7 @@ export type CheckoutFormValues = z.infer<typeof checkoutSchema>;
 export const checkoutItemSchema = z.object({
   productId: z.string().uuid(),
   quantity: z.number().int().positive(),
-  variationValue: z.string().optional(),
+  variationId: z.string().uuid().optional(),
 });
 
 export type CheckoutItemInput = z.infer<typeof checkoutItemSchema>;

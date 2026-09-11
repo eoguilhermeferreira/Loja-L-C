@@ -6,25 +6,27 @@ import { Minus, Plus, ShoppingBag, Zap } from "lucide-react";
 import { toast } from "sonner";
 
 import { useCart } from "@/components/cart/cart-provider";
+import { VariationSheet } from "@/components/store/variation-sheet";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import type { ProductWithRelations } from "@/types/database.types";
+import { getVariationModel } from "@/lib/variations";
+import type { ProductVariation, ProductWithRelations } from "@/types/database.types";
 
 export function AddToCart({ product }: { product: ProductWithRelations }) {
   const router = useRouter();
   const { addItem } = useCart();
-  const hasVariations = product.product_variations.length > 0;
-  const [variationId, setVariationId] = React.useState(
-    hasVariations ? product.product_variations[0].id : null
-  );
-  const [quantity, setQuantity] = React.useState(1);
+  const model = getVariationModel(product.product_variations);
+  const hasVariations = model.mode !== "none";
 
-  const selectedVariation = product.product_variations.find((v) => v.id === variationId);
-  const stock = hasVariations ? selectedVariation?.stock ?? 0 : product.stock;
-  const canBuy = product.is_active && stock > 0;
+  const [quantity, setQuantity] = React.useState(1);
+  const [sheetAction, setSheetAction] = React.useState<"cart" | "buy" | null>(null);
+
+  const stock = product.stock;
+  const anyStock = hasVariations ? product.product_variations.some((v) => v.stock > 0) : stock > 0;
+  const canBuy = product.is_active && anyStock;
   const unitPrice = product.promo_price ?? product.price;
 
-  function addToCart() {
+  function addToCart(variation: ProductVariation | null, qty: number) {
+    const isCombo = model.mode === "combo";
     addItem(
       {
         productId: product.id,
@@ -33,75 +35,77 @@ export function AddToCart({ product }: { product: ProductWithRelations }) {
         imageUrl: product.product_images[0]?.url ?? null,
         unitPrice,
         weightGrams: product.weight_grams,
-        maxStock: stock,
-        variationLabel: selectedVariation?.label,
-        variationValue: selectedVariation?.value,
+        maxStock: variation ? variation.stock : stock,
+        variationId: variation?.id,
+        variationLabel: variation
+          ? isCombo
+            ? "Tamanho / Cor"
+            : variation.label
+          : undefined,
+        variationValue: variation
+          ? isCombo && variation.value
+            ? `${variation.label} / ${variation.value}`
+            : variation.value || variation.label
+          : undefined,
       },
-      quantity
+      qty
     );
   }
 
   function handleAdd() {
     if (!canBuy) return;
-    addToCart();
+    if (hasVariations) {
+      setSheetAction("cart");
+      return;
+    }
+    addToCart(null, quantity);
     toast.success("Adicionado ao carrinho", { description: product.name });
   }
 
   function handleBuyNow() {
     if (!canBuy) return;
-    addToCart();
+    if (hasVariations) {
+      setSheetAction("buy");
+      return;
+    }
+    addToCart(null, quantity);
     router.push("/checkout");
+  }
+
+  function handleConfirmVariation(variation: ProductVariation, qty: number) {
+    addToCart(variation, qty);
+    if (sheetAction === "buy") {
+      router.push("/checkout");
+    } else {
+      toast.success("Adicionado ao carrinho", { description: product.name });
+    }
+    setSheetAction(null);
   }
 
   return (
     <div className="flex flex-col gap-4">
-      {hasVariations && (
-        <div className="flex flex-col gap-2">
-          <span className="text-sm font-medium">{product.product_variations[0].label}</span>
-          <div className="flex flex-wrap gap-2">
-            {product.product_variations.map((variation) => (
-              <button
-                key={variation.id}
-                onClick={() => {
-                  setVariationId(variation.id);
-                  setQuantity(1);
-                }}
-                disabled={variation.stock <= 0}
-                className={cn(
-                  "rounded-md border px-3 py-1.5 text-sm transition-colors",
-                  variation.id === variationId
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-input hover:bg-secondary",
-                  variation.stock <= 0 && "cursor-not-allowed opacity-40 line-through"
-                )}
-              >
-                {variation.value}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
       {canBuy ? (
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-3">
-            <div className="flex items-center rounded-md border border-input">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-              >
-                <Minus className="size-4" />
-              </Button>
-              <span className="w-8 text-center text-sm">{quantity}</span>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setQuantity((q) => Math.min(stock, q + 1))}
-              >
-                <Plus className="size-4" />
-              </Button>
-            </div>
+            {!hasVariations && (
+              <div className="flex items-center rounded-md border border-input">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                >
+                  <Minus className="size-4" />
+                </Button>
+                <span className="w-8 text-center text-sm">{quantity}</span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setQuantity((q) => Math.min(stock, q + 1))}
+                >
+                  <Plus className="size-4" />
+                </Button>
+              </div>
+            )}
             <Button size="lg" variant="outline" className="flex-1" onClick={handleAdd}>
               <ShoppingBag /> Adicionar ao carrinho
             </Button>
@@ -116,8 +120,19 @@ export function AddToCart({ product }: { product: ProductWithRelations }) {
         </Button>
       )}
 
-      {canBuy && stock <= 5 && (
+      {!hasVariations && canBuy && stock <= 5 && (
         <p className="text-xs text-accent-foreground/80">Últimas {stock} unidades!</p>
+      )}
+
+      {hasVariations && (
+        <VariationSheet
+          key={sheetAction ?? "none"}
+          product={product}
+          open={sheetAction !== null}
+          onOpenChange={(open) => !open && setSheetAction(null)}
+          actionLabel={sheetAction === "buy" ? "Comprar agora" : "Adicionar ao carrinho"}
+          onConfirm={handleConfirmVariation}
+        />
       )}
     </div>
   );
