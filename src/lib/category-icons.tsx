@@ -66,14 +66,14 @@ function ShortsIcon({ className }: { className?: string }) {
   );
 }
 
-/** Conjunto — uma blusinha e uma calça lado a lado. */
+/** Conjunto — uma blusinha e uma calça lado a lado, do mesmo tamanho dos demais ícones. */
 function OutfitIcon({ className }: { className?: string }) {
   return (
     <svg {...svgDefaults} className={className}>
-      <g transform="translate(1,2.2) scale(0.42)">
+      <g transform="translate(-0.17,0) scale(0.514,1)">
         <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z" />
       </g>
-      <g transform="translate(10.5,2.2) scale(0.42)">
+      <g transform="translate(8,-0.1) scale(0.833,1.053)">
         <path d="M7 2 L17 2 L18 21 L13 21 L12 11 L11 21 L6 21 Z" />
       </g>
     </svg>
