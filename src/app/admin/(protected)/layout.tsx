@@ -27,9 +27,9 @@ export default async function AdminProtectedLayout({
   }
 
   return (
-    <div className="flex min-h-screen bg-secondary/20">
+    <div className="flex min-h-screen flex-col bg-secondary/20 lg:flex-row">
       <AdminSidebar />
-      <main className="flex-1 overflow-x-hidden p-6 sm:p-8">{children}</main>
+      <main className="flex-1 overflow-x-hidden p-4 sm:p-6 lg:p-8">{children}</main>
     </div>
   );
 }
