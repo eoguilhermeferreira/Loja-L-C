@@ -65,13 +65,12 @@ function ShortsIcon({ className }: { className?: string }) {
   );
 }
 
-/** Boné — vista de perfil: aba, coroa arredondada e botão no topo. */
+/** Boné — vista de perfil: coroa arredondada, aba curva e botão no topo. */
 function CapIcon({ className }: { className?: string }) {
   return (
     <svg {...svgDefaults} className={className}>
-      <path d="M4 13 Q4 4 10 4 Q16 4 16 13" />
-      <path d="M4 13 L16 13 Q21 13.5 22 16 Q19 17 15 16 L4 15 Q2.5 14 4 13 Z" />
-      <circle cx="10" cy="4" r="0.8" fill="currentColor" stroke="none" />
+      <path d="M3 14 Q3 3 11 3 Q18 3 18 12 L18 13.5 Q21 13 23 15.5 Q20 17.3 14 16.5 L3 14 Z" />
+      <circle cx="11" cy="3" r="0.9" fill="currentColor" stroke="none" />
     </svg>
   );
 }
