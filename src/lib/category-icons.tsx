@@ -7,7 +7,6 @@ import {
   Watch,
   Headphones,
   Glasses,
-  Backpack,
   Gem,
   Shirt,
   ShoppingBag,
@@ -66,6 +65,17 @@ function ShortsIcon({ className }: { className?: string }) {
   );
 }
 
+/** Boné — vista de perfil: aba, coroa arredondada e botão no topo. */
+function CapIcon({ className }: { className?: string }) {
+  return (
+    <svg {...svgDefaults} className={className}>
+      <path d="M4 13 Q4 4 10 4 Q16 4 16 13" />
+      <path d="M4 13 L16 13 Q21 13.5 22 16 Q19 17 15 16 L4 15 Q2.5 14 4 13 Z" />
+      <circle cx="10" cy="4" r="0.8" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 /** Conjunto — uma blusinha e uma calça lado a lado, do mesmo tamanho dos demais ícones. */
 function OutfitIcon({ className }: { className?: string }) {
   return (
@@ -92,7 +102,7 @@ export const CATEGORY_ICONS: Record<string, IconComponent> = {
   relogios: Watch,
   fones: Headphones,
   oculos: Glasses,
-  acessorios: Backpack,
+  acessorios: CapIcon,
   joias: Gem,
   camiseta: Shirt,
   camisa: Shirt,
