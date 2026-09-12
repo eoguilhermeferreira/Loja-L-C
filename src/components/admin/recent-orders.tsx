@@ -1,6 +1,10 @@
 import Link from "next/link";
 
-import { DeliveryStatusBadge, PaymentStatusBadge } from "@/components/admin/status-badge";
+import {
+  DeliveryMethodBadge,
+  DeliveryStatusBadge,
+  PaymentStatusBadge,
+} from "@/components/admin/status-badge";
 import { Card } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatDateTime, formatPrice } from "@/lib/format";
@@ -42,7 +46,10 @@ export function RecentOrders({ orders }: { orders: OrderWithItems[] }) {
                 <PaymentStatusBadge status={order.payment_status} />
               </TableCell>
               <TableCell>
-                <DeliveryStatusBadge status={order.delivery_status} />
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <DeliveryStatusBadge status={order.delivery_status} />
+                  <DeliveryMethodBadge method={order.delivery_method} />
+                </div>
               </TableCell>
             </TableRow>
           ))}

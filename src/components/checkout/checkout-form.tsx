@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as React from "react";
-import { Loader2, ShoppingBag } from "lucide-react";
+import { Loader2, ShoppingBag, Store, Truck } from "lucide-react";
 import { toast } from "sonner";
 
 import { createOrder, getOrderStatus, type SubmitPaymentResult } from "@/app/(store)/checkout/actions";
@@ -20,7 +20,7 @@ import { checkoutSchema, type CheckoutFormValues } from "@/lib/checkout-schema";
 import { formatCep, formatPrice, onlyDigits, slugify } from "@/lib/format";
 import { calculateShipping } from "@/lib/shipping";
 import { fetchAddressByCep } from "@/lib/viacep";
-import type { PaymentMethod } from "@/types/database.types";
+import type { DeliveryMethod, PaymentMethod } from "@/types/database.types";
 
 const { deliveryCity, deliveryState } = storeConfig.shipping;
 
@@ -31,7 +31,12 @@ const PAYMENT_OPTIONS: { value: PaymentMethod; label: string }[] = [
   { value: "boleto", label: "Boleto" },
 ];
 
-type FormState = Omit<CheckoutFormValues, "paymentMethod">;
+type FormState = Omit<CheckoutFormValues, "paymentMethod" | "deliveryMethod">;
+
+const DELIVERY_METHOD_OPTIONS: { value: DeliveryMethod; label: string; icon: typeof Truck }[] = [
+  { value: "entrega", label: "Entrega", icon: Truck },
+  { value: "retirada", label: "Retirar na loja", icon: Store },
+];
 
 const EMPTY_FORM: FormState = {
   customerName: "",
@@ -53,6 +58,7 @@ export function CheckoutForm() {
   const { items, subtotal, clear, isHydrated } = useCart();
 
   const [form, setForm] = React.useState<FormState>(EMPTY_FORM);
+  const [deliveryMethod, setDeliveryMethod] = React.useState<DeliveryMethod>("entrega");
   const [paymentMethod, setPaymentMethod] = React.useState<PaymentMethod>("pix");
   const [errors, setErrors] = React.useState<Partial<Record<string, string>>>({});
   const [step, setStep] = React.useState<Step>("form");
@@ -62,7 +68,7 @@ export function CheckoutForm() {
   );
   const [pixData, setPixData] = React.useState<{ code: string; base64?: string } | null>(null);
 
-  const shipping = calculateShipping();
+  const shipping = calculateShipping(deliveryMethod);
 
   function updateField<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((current) => ({ ...current, [key]: value }));
@@ -94,6 +100,7 @@ export function CheckoutForm() {
 
     const parsed = checkoutSchema.safeParse({
       ...form,
+      deliveryMethod,
       cep: onlyDigits(form.cep),
       paymentMethod,
     });
@@ -246,6 +253,34 @@ export function CheckoutForm() {
             </Card>
 
             <Card className="space-y-4 p-6">
+              <h2 className="font-display text-lg font-semibold">Como você quer receber?</h2>
+              <div className="grid grid-cols-2 gap-3">
+                {DELIVERY_METHOD_OPTIONS.map((option) => (
+                  <button
+                    type="button"
+                    key={option.value}
+                    onClick={() => setDeliveryMethod(option.value)}
+                    className={`flex items-center justify-center gap-2 rounded-md border px-3 py-3 text-sm font-medium transition-colors ${
+                      deliveryMethod === option.value
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-input hover:bg-secondary"
+                    }`}
+                  >
+                    <option.icon className="size-4" /> {option.label}
+                  </button>
+                ))}
+              </div>
+              {deliveryMethod === "retirada" && (
+                <p className="rounded-md bg-secondary p-3 text-sm text-muted-foreground">
+                  Sem custo de frete. Retire seu pedido em {storeConfig.address.street},{" "}
+                  {storeConfig.address.number} — {storeConfig.address.city}/
+                  {storeConfig.address.state}.
+                </p>
+              )}
+            </Card>
+
+            {deliveryMethod === "entrega" && (
+            <Card className="space-y-4 p-6">
               <h2 className="font-display text-lg font-semibold">Endereço de entrega</h2>
               <div className="grid gap-4 sm:grid-cols-3">
                 <Field label="CEP" error={errors.cep}>
@@ -286,6 +321,7 @@ export function CheckoutForm() {
                 </Field>
               </div>
             </Card>
+            )}
 
             <Card className="space-y-4 p-6">
               <h2 className="font-display text-lg font-semibold">Forma de pagamento</h2>
@@ -351,7 +387,7 @@ export function CheckoutForm() {
           </div>
           <div className="flex justify-between">
             <span className="text-muted-foreground">{shipping.label}</span>
-            <span>{formatPrice(shipping.cost)}</span>
+            <span>{deliveryMethod === "retirada" ? "Grátis" : formatPrice(shipping.cost)}</span>
           </div>
         </div>
         <div className="flex justify-between border-t border-border pt-3 font-display text-lg font-semibold">

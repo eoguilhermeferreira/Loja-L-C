@@ -10,7 +10,9 @@ import { onlyDigits } from "@/lib/format";
 import { getVariationModel } from "@/lib/variations";
 import { storeConfig } from "@/config/store";
 import { z } from "zod";
-import type { PaymentStatus } from "@/types/database.types";
+import type { Database, PaymentStatus } from "@/types/database.types";
+
+type CustomerUpsertData = Database["public"]["Tables"]["customers"]["Insert"];
 
 const createOrderInput = z.object({
   customer: checkoutSchema,
@@ -35,18 +37,23 @@ async function upsertCustomerFromCheckout(
   customer: z.infer<typeof checkoutSchema>
 ): Promise<string | null> {
   try {
-    const customerData = {
+    const customerData: CustomerUpsertData = {
       name: customer.customerName,
       email: customer.email,
       phone: onlyDigits(customer.phone),
-      cep: onlyDigits(customer.cep),
-      street: customer.street,
-      address_number: customer.number,
-      complement: customer.complement || null,
-      neighborhood: customer.neighborhood,
-      city: customer.city,
-      state: customer.state.toUpperCase(),
     };
+
+    // Retirada na loja não coleta endereço do cliente — não sobrescreve o
+    // endereço já cadastrado dele com campos vazios.
+    if (customer.deliveryMethod === "entrega") {
+      customerData.cep = onlyDigits(customer.cep);
+      customerData.street = customer.street;
+      customerData.address_number = customer.number;
+      customerData.complement = customer.complement || null;
+      customerData.neighborhood = customer.neighborhood;
+      customerData.city = customer.city;
+      customerData.state = customer.state.toUpperCase();
+    }
 
     const { data: existing } = await supabase
       .from("customers")
@@ -148,9 +155,30 @@ export async function createOrder(input: unknown): Promise<CreateOrderResult> {
     });
   }
 
-  const shipping = calculateShipping();
+  const shipping = calculateShipping(customer.deliveryMethod);
   const total = subtotal + shipping.cost;
   const customerId = await upsertCustomerFromCheckout(supabase, customer);
+
+  const shippingAddress =
+    customer.deliveryMethod === "retirada"
+      ? {
+          cep: "",
+          street: storeConfig.address.street,
+          number: storeConfig.address.number,
+          complement: undefined,
+          neighborhood: "",
+          city: storeConfig.address.city,
+          state: storeConfig.address.state,
+        }
+      : {
+          cep: onlyDigits(customer.cep),
+          street: customer.street,
+          number: customer.number,
+          complement: customer.complement,
+          neighborhood: customer.neighborhood,
+          city: customer.city,
+          state: customer.state.toUpperCase(),
+        };
 
   const { data: order, error: orderError } = await supabase
     .from("orders")
@@ -159,19 +187,12 @@ export async function createOrder(input: unknown): Promise<CreateOrderResult> {
       email: customer.email,
       phone: onlyDigits(customer.phone),
       customer_id: customerId,
-      shipping_address: {
-        cep: onlyDigits(customer.cep),
-        street: customer.street,
-        number: customer.number,
-        complement: customer.complement,
-        neighborhood: customer.neighborhood,
-        city: customer.city,
-        state: customer.state.toUpperCase(),
-      },
+      shipping_address: shippingAddress,
       subtotal,
       shipping_cost: shipping.cost,
       total,
       shipping_method: shipping.label,
+      delivery_method: customer.deliveryMethod,
       payment_method: customer.paymentMethod,
       payment_status: "pendente",
       delivery_status: "recebido",

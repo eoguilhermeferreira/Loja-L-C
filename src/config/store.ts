@@ -18,6 +18,8 @@ export const storeConfig = {
   },
 
   address: {
+    street: "Rua Mario Almeida Fagundes",
+    number: "30",
     city: "Avaré",
     state: "SP",
   },

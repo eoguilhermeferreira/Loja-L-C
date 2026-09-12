@@ -6,7 +6,12 @@ import { toast } from "sonner";
 
 import { updateOrderStatus } from "@/app/admin/(protected)/pedidos/actions";
 import { WhatsAppIcon } from "@/components/icons/whatsapp-icon";
-import { PAYMENT_LABELS, DELIVERY_LABELS } from "@/components/admin/status-badge";
+import {
+  DeliveryMethodBadge,
+  DELIVERY_LABELS,
+  DELIVERY_STATUS_BY_METHOD,
+  PAYMENT_LABELS,
+} from "@/components/admin/status-badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -28,6 +33,8 @@ export function OrderDetail({ order }: { order: OrderWithItems }) {
   const [isSaving, setIsSaving] = React.useState(false);
 
   const address = order.shipping_address;
+  const isPickup = order.delivery_method === "retirada";
+  const availableStatuses = DELIVERY_STATUS_BY_METHOD[order.delivery_method];
 
   async function handleSave() {
     setIsSaving(true);
@@ -46,7 +53,10 @@ export function OrderDetail({ order }: { order: OrderWithItems }) {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-2xl font-semibold">Pedido #{order.order_number}</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="font-display text-2xl font-semibold">Pedido #{order.order_number}</h1>
+            <DeliveryMethodBadge method={order.delivery_method} />
+          </div>
           <p className="text-sm text-muted-foreground">{formatDateTime(order.created_at)}</p>
         </div>
         <Button asChild variant="outline">
@@ -97,15 +107,24 @@ export function OrderDetail({ order }: { order: OrderWithItems }) {
           </Card>
 
           <Card className="space-y-2 p-6">
-            <h2 className="font-display text-lg font-semibold">Cliente e entrega</h2>
+            <h2 className="font-display text-lg font-semibold">
+              Cliente e {isPickup ? "retirada" : "entrega"}
+            </h2>
             <p className="text-sm">{order.customer_name}</p>
             <p className="text-sm text-muted-foreground">{order.email} · {order.phone}</p>
-            <p className="text-sm text-muted-foreground">
-              {address.street}, {address.number}
-              {address.complement ? ` - ${address.complement}` : ""} · {address.neighborhood}
-              <br />
-              {address.city} - {address.state} · CEP {address.cep}
-            </p>
+            {isPickup ? (
+              <p className="text-sm text-muted-foreground">
+                Retirar na loja — {address.street}, {address.number} · {address.city} -{" "}
+                {address.state}
+              </p>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                {address.street}, {address.number}
+                {address.complement ? ` - ${address.complement}` : ""} · {address.neighborhood}
+                <br />
+                {address.city} - {address.state} · CEP {address.cep}
+              </p>
+            )}
           </Card>
         </div>
 
@@ -133,18 +152,20 @@ export function OrderDetail({ order }: { order: OrderWithItems }) {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {Object.entries(DELIVERY_LABELS).map(([value, { label }]) => (
+                {availableStatuses.map((value) => (
                   <SelectItem key={value} value={value}>
-                    {label}
+                    {DELIVERY_LABELS[value].label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
-          <div>
-            <Label className="mb-1.5 block">Código de rastreio</Label>
-            <Input value={trackingCode} onChange={(e) => setTrackingCode(e.target.value)} />
-          </div>
+          {!isPickup && (
+            <div>
+              <Label className="mb-1.5 block">Código de rastreio</Label>
+              <Input value={trackingCode} onChange={(e) => setTrackingCode(e.target.value)} />
+            </div>
+          )}
           <Button onClick={handleSave} disabled={isSaving} className="w-full">
             {isSaving && <Loader2 className="size-4 animate-spin" />}
             Salvar alterações

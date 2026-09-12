@@ -10,24 +10,48 @@ export const checkoutSchema = z
     customerName: z.string().trim().min(3, "Informe seu nome completo"),
     email: z.string().trim().email("E-mail inválido"),
     phone: z.string().trim().min(10, "Informe um telefone com DDD"),
-    cep: z.string().trim().length(8, "CEP inválido"),
-    street: z.string().trim().min(2, "Informe a rua"),
-    number: z.string().trim().min(1, "Informe o número"),
+    deliveryMethod: z.enum(["entrega", "retirada"]),
+    cep: z.string().trim().optional().default(""),
+    street: z.string().trim().optional().default(""),
+    number: z.string().trim().optional().default(""),
     complement: z.string().trim().optional(),
-    neighborhood: z.string().trim().min(2, "Informe o bairro"),
-    city: z.string().trim().min(2, "Informe a cidade"),
-    state: z.string().trim().length(2, "UF inválida"),
+    neighborhood: z.string().trim().optional().default(""),
+    city: z.string().trim().optional().default(""),
+    state: z.string().trim().optional().default(""),
     paymentMethod: z.enum(["pix", "cartao_credito", "cartao_debito", "boleto"]),
   })
-  .refine(
-    (data) =>
-      slugify(data.city) === slugify(deliveryCity) &&
-      data.state.trim().toUpperCase() === deliveryState,
-    {
-      message: `No momento só entregamos em ${deliveryCity}/${deliveryState}`,
-      path: ["city"],
+  .superRefine((data, ctx) => {
+    // Retirada na loja não precisa de endereço de entrega.
+    if (data.deliveryMethod !== "entrega") return;
+
+    if (data.cep.length !== 8) {
+      ctx.addIssue({ code: "custom", message: "CEP inválido", path: ["cep"] });
     }
-  );
+    if (data.street.length < 2) {
+      ctx.addIssue({ code: "custom", message: "Informe a rua", path: ["street"] });
+    }
+    if (data.number.length < 1) {
+      ctx.addIssue({ code: "custom", message: "Informe o número", path: ["number"] });
+    }
+    if (data.neighborhood.length < 2) {
+      ctx.addIssue({ code: "custom", message: "Informe o bairro", path: ["neighborhood"] });
+    }
+    if (data.city.length < 2) {
+      ctx.addIssue({ code: "custom", message: "Informe a cidade", path: ["city"] });
+    }
+    if (data.state.length !== 2) {
+      ctx.addIssue({ code: "custom", message: "UF inválida", path: ["state"] });
+    } else if (
+      slugify(data.city) !== slugify(deliveryCity) ||
+      data.state.trim().toUpperCase() !== deliveryState
+    ) {
+      ctx.addIssue({
+        code: "custom",
+        message: `No momento só entregamos em ${deliveryCity}/${deliveryState}`,
+        path: ["city"],
+      });
+    }
+  });
 
 export type CheckoutFormValues = z.infer<typeof checkoutSchema>;
 

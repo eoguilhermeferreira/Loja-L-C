@@ -16,7 +16,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { DeliveryStatusBadge, PaymentStatusBadge } from "@/components/admin/status-badge";
+import {
+  DeliveryMethodBadge,
+  DeliveryStatusBadge,
+  PaymentStatusBadge,
+} from "@/components/admin/status-badge";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatDateTime, formatPrice } from "@/lib/format";
@@ -82,7 +86,10 @@ export function OrderList({ initialOrders }: { initialOrders: OrderWithItems[] }
                 <PaymentStatusBadge status={order.payment_status} />
               </TableCell>
               <TableCell>
-                <DeliveryStatusBadge status={order.delivery_status} />
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <DeliveryStatusBadge status={order.delivery_status} />
+                  <DeliveryMethodBadge method={order.delivery_method} />
+                </div>
               </TableCell>
               <TableCell>
                 <AlertDialog>
